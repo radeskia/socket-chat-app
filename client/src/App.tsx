@@ -13,15 +13,17 @@ const App = () => {
         const timeNow = Date.now();
 
         const copy = [...messages];
-        copy.push({ id: ID + 1 + timeNow, message: message, time: timeNow });
+        copy.push({ id: ID + 1, message: message, time: timeNow });
         setMessages(copy);
     };
+
+    console.log(messages);
 
     socket.on("receive_message", (data) => {
         const timeNow = Date.now();
         const copy = [...messages];
         copy.push({
-            id: copy.length + timeNow,
+            id: copy.length ?? 1,
             message: data.message,
             time: Date.now(),
         });
