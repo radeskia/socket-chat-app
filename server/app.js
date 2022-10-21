@@ -12,7 +12,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://192.168.100.181:3000 ",
+        origin: "http://192.168.100.181:3000",
         methods: ["GET", "POST"],
     },
 });
@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     socket.on("send_message", (data) => {
         socket.broadcast.emit("receive_message", data);
 
-        fs.readFile("../client/public/data.json", "utf8", (err, jsonString) => {
+        fs.readFile("../client/src/data.json", "utf8", (err, jsonString) => {
             if (err) {
                 console.log("File read failed: ", err);
                 return;
@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
             const newData = JSON.stringify(objectData);
 
             // Write new data
-            fs.writeFile("../client/public/data.json", newData, (err) => {
+            fs.writeFile("../client/src/data.json", newData, (err) => {
                 if (err) {
                     console.log("File not written: ", err);
                 }

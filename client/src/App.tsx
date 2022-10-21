@@ -1,6 +1,6 @@
 import * as io from "socket.io-client";
 import { useState, useEffect } from "react";
-import data from "../public/data.json";
+import data from "./data.json";
 const socket = io.connect("http://192.168.100.181:3001");
 
 const App = () => {
