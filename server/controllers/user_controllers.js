@@ -11,7 +11,7 @@ module.exports = {
                 username: req.body.username,
             });
             if (checkDuplicate) {
-                res.send("User already exists");
+                res.json("User already exists");
             } else {
                 // Create new user Object
                 const newUser = new User({
@@ -21,7 +21,7 @@ module.exports = {
 
                 // Await db save & return response
                 await newUser.save();
-                res.send("Register successful!");
+                res.json("Register successful!");
             }
         } catch (error) {
             res.send(error);
