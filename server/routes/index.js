@@ -13,6 +13,7 @@ router
         res.send(`asd is okay too`);
     })
     .get("/messages", message_controller.getAllMessages)
-    .post("/register", user_controller.register);
+    .post("/register", user_controller.register)
+    .post("/login", user_controller.login);
 
 module.exports = router;

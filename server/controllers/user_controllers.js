@@ -1,17 +1,22 @@
 const User = require("../models/user");
 
+const PrettyResponse = {
+    error: false,
+    message: "",
+};
+
 module.exports = {
     register: async (req, res) => {
-        // console.log(`okay12`);
-        // console.log(req.body);
-        // res.send(req.body);
         try {
             // Check db if username exists
             const checkDuplicate = await User.findOne({
                 username: req.body.username,
             });
             if (checkDuplicate) {
-                res.json("User already exists");
+                PrettyResponse.error = true;
+                PrettyResponse.message = "User already exists!";
+
+                res.json(PrettyResponse);
             } else {
                 // Create new user Object
                 const newUser = new User({
@@ -21,10 +26,44 @@ module.exports = {
 
                 // Await db save & return response
                 await newUser.save();
-                res.json("Register successful!");
+                PrettyResponse.error = false;
+                PrettyResponse.message = "Register successful!";
+
+                res.json(PrettyResponse);
             }
         } catch (error) {
-            res.send(error);
+            PrettyResponse.error = true;
+            PrettyResponse.message = error;
+
+            res.json(PrettyResponse);
         }
+    },
+    login: async (req, res) => {
+        try {
+            const checkUser = await User.findOne({
+                username: req.body.username,
+            });
+            const checkUserPassword = await User.findOne({
+                username: req.body.username,
+                password: req.body.password,
+            });
+
+            if (!checkUser) {
+                PrettyResponse.error = true;
+                PrettyResponse.message = "No such user found!";
+
+                res.json(PrettyResponse);
+            } else if (!checkUserPassword) {
+                PrettyResponse.error = true;
+                PrettyResponse.message = "Wrong password!";
+
+                res.json(PrettyResponse);
+            } else {
+                PrettyResponse.error = false;
+                PrettyResponse.message = "Logged in!";
+
+                res.json(PrettyResponse);
+            }
+        } catch (error) {}
     },
 };
