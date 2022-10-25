@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ChatApp from "./components/ChatApp";
-import Layout from "./layout/Layout";
+import Authenticated from "./layout/Authenticated";
+import Unauthenticated from "./layout/Unauthenticated";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -11,9 +12,11 @@ const App = () => {
         setUser(localStorage.getItem("username") ?? "");
     }, []);
 
+    console.log(user);
+
     return (
         <div className="bg-gray-900 min-h-screen flex items-center w-screen">
-            <Layout />
+            {user ? <Authenticated /> : <Unauthenticated />}
         </div>
     );
 };

@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ setUser }: any) => {
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState<string>("");
 
     const handleUserLogin = (username: string) => {
         localStorage.setItem("username", username);
         setUser(username);
+        navigate("/chat");
     };
 
     return (
-        <div className="flex flex-col mx-auto p-6 text-center border justify-between border-gray-700 my-auto shadow-2xl">
+        <div className="flex flex-col mx-auto w-72 p-4 text-center border justify-between border-gray-700 my-auto shadow-2xl">
             <div className="flex flex-col text-left">
                 <h1 className="text-2xl mb-4 text-center text-cyan-500">
                     Login

@@ -64,6 +64,9 @@ module.exports = {
 
                 res.json(PrettyResponse);
             }
-        } catch (error) {}
+        } catch (error) {
+            PrettyResponse.error = true;
+            PrettyResponse.message = error;
+        }
     },
 };
