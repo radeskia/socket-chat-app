@@ -3,6 +3,8 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 
+const bodyParser = require("body-parser");
+
 // Socket.io
 const { Server } = require("socket.io");
 
@@ -20,6 +22,10 @@ const app = express();
 
 // Middleware
 app.use(cors());
+
+// Body Parser Config
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Must be http.createServer bin/www not working with io
 const server = http.createServer(app);

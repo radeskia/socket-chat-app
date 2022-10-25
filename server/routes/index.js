@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const message_controller = require("../controllers/message_controllers.ts");
+const message_controller = require("../controllers/message_controllers");
+const user_controller = require("../controllers/user_controllers");
 
-/* GET home page. */
 router
     .get("/", (req, res) => {
         console.log(`okay`);
@@ -12,6 +12,7 @@ router
         console.log(`asd is okay too`);
         res.send(`asd is okay too`);
     })
-    .get("/messages", message_controller.getAllMessages);
+    .get("/messages", message_controller.getAllMessages)
+    .post("/register", user_controller.register);
 
 module.exports = router;
