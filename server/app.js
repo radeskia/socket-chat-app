@@ -1,11 +1,22 @@
+// Server related
 const express = require("express");
 const http = require("http");
-const { Server } = require("socket.io");
-const app = express();
 const cors = require("cors");
-const fs = require("fs");
+
+// Socket.io
+const { Server } = require("socket.io");
+
+// MongoDB & Mongoose
 const mongoose = require("mongoose");
+
+// Schemas
 const Message = require("./models/message");
+
+// Routers
+const mainRouter = require("./routes/index");
+
+// Initialize express app
+const app = express();
 
 // Middleware
 app.use(cors());
@@ -33,7 +44,7 @@ io.on("connection", (socket) => {
     // On new connection, log connection ID to console
     console.log(`${socket.id} connected`);
 
-    // On receiving a message, broadcast it to listeners
+    // On receiving a message, broadcast it to listeners & write to db
     socket.on("send_message", async (data) => {
         socket.broadcast.emit("receive_message", data);
 
@@ -51,41 +62,9 @@ io.on("connection", (socket) => {
     });
 });
 
-const indexRouter = require("./routes/index");
-const { userInfo } = require("os");
-app.use("/", indexRouter);
+app.use("/", mainRouter);
 
 // Initial server.listen
 server.listen(3001, () => {
     console.log(`Running on 3001...`);
 });
-
-/*
-        fs.readFile("../client/src/data.json", "utf8", (err, jsonString) => {
-            if (err) {
-                console.log("File read failed: ", err);
-                return;
-            }
-
-            // Convert data into javascript object
-            const objectData = JSON.parse(jsonString);
-
-            // Add newly received message to above object
-            objectData.push({
-                id: objectData.length + 1,
-                message: data.message,
-                time: Date.now(),
-            });
-
-            // Re-stringify before rewriting the file
-            const newData = JSON.stringify(objectData);
-
-            // Write new data
-            fs.writeFile("../client/src/data.json", newData, (err) => {
-                if (err) {
-                    console.log("File not written: ", err);
-                }
-                console.log(`Message written!`);
-            });
-        });
-        */
