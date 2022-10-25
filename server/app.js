@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
     console.log(`${socket.id} connected`);
 
     // On receiving a message, broadcast it to listeners
-    socket.on("send_message", (data) => {
+    socket.on("send_message", async (data) => {
         socket.broadcast.emit("receive_message", data);
 
         fs.readFile("../client/src/data.json", "utf8", (err, jsonString) => {
