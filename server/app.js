@@ -4,6 +4,8 @@ const { Server } = require("socket.io");
 const app = express();
 const cors = require("cors");
 const fs = require("fs");
+const mongoose = require("mongoose");
+const Message = require("./models/message");
 
 // Middleware
 app.use(cors());
@@ -17,7 +19,16 @@ const io = new Server(server, {
     },
 });
 
-// Initiate connection listener
+// INITIATE DATABASE CONNECTION
+mongoose.connect(
+    `mongodb+srv://admin:OH5IW9FVX7dk4EdH@chat-app.nh0g5kb.mongodb.net/chat-app?retryWrites=true&w=majority`,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }
+);
+
+// INITIATE SOCKET.IO CONNECTION
 io.on("connection", (socket) => {
     // On new connection, log connection ID to console
     console.log(`${socket.id} connected`);
@@ -26,6 +37,30 @@ io.on("connection", (socket) => {
     socket.on("send_message", async (data) => {
         socket.broadcast.emit("receive_message", data);
 
+        // Save new message
+        try {
+            const newMessage = new Message({
+                message: data.message,
+                time: Date.now(),
+            });
+            await newMessage.save();
+            console.log("Saved");
+        } catch (error) {
+            console.log(error);
+        }
+    });
+});
+
+const indexRouter = require("./routes/index");
+const { userInfo } = require("os");
+app.use("/", indexRouter);
+
+// Initial server.listen
+server.listen(3001, () => {
+    console.log(`Running on 3001...`);
+});
+
+/*
         fs.readFile("../client/src/data.json", "utf8", (err, jsonString) => {
             if (err) {
                 console.log("File read failed: ", err);
@@ -53,13 +88,4 @@ io.on("connection", (socket) => {
                 console.log(`Message written!`);
             });
         });
-    });
-});
-
-const indexRouter = require("./routes/index");
-app.use("/", indexRouter);
-
-// Initial server.listen
-server.listen(3001, () => {
-    console.log(`Running on 3001...`);
-});
+        */
