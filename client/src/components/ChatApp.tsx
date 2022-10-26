@@ -7,7 +7,13 @@ import { useQuery } from "react-query";
 const socket = io.connect("http://192.168.100.181:3001");
 
 const ChatApp = () => {
-    // Current message (Draft to be sent)
+    /*
+    =============================================================
+    TODO: Implement message "Draft" functionality that is hooked 
+    with a debounce hook & saves the currently typed message into
+    local storage (e.g every 10 seconds after the latest onChange)
+    =============================================================*/
+    // Current message
     const [message, setMessage] = useState<any>("");
 
     /*
@@ -32,8 +38,18 @@ const ChatApp = () => {
         setMessages(messagesData);
     }, [messagesLoading]);
 
-    console.log(messages);
+    /*
+    =============================================================
+    Send message handler & socket event listener
+    The send message handler emits a "send_message" event that gets
+    picked up by the backend & all connected clients, also we update
+    the local copy of the messages with the newly sent message so we 
+    dont have to wait & update that one from server.
 
+    In the socket event listener when the "receive_message" event is 
+    picked up, we update the local state with the received messages
+    thus keeping the chat up to date.
+    =============================================================*/
     const handleSendMessage = (message: any) => {
         socket.emit("send_message", { message: `${message}` });
 
@@ -56,6 +72,11 @@ const ChatApp = () => {
         setMessages(copy);
     });
 
+    /*
+    =============================================================
+    We make a copy of the array and we reverse the order, so we 
+    can show the latest messages at the bottom.
+    =============================================================*/
     const copyArr = [...messages];
     const reversed = copyArr.reverse();
 
@@ -72,7 +93,7 @@ const ChatApp = () => {
                                         className="flex justify-between"
                                         key={message._id}
                                     >
-                                        <p className="text-gray-500 p-1 my-2 max-w-max px-2">
+                                        <p className="flex text-gray-500 p-1 my-2 max-w-max px-2 items-end">
                                             {format(
                                                 new Date(+message.time),
                                                 "HH:mm"

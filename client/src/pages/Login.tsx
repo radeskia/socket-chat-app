@@ -2,11 +2,13 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import TextField from "../components/Inputs/TextField";
+import Modal from "../components/Modal";
 import { useAuth } from "../providers/auth-context";
 import { AUTHENTICATION_LOGIN_SCHEMA } from "../schemas/AuthentiationSchemas";
 import { handleFetch } from "../utils/handleFetch";
 
 const Login = () => {
+    // Update user context on successful login
     const { updateUser } = useAuth();
 
     // MODAL
@@ -42,29 +44,12 @@ const Login = () => {
 
     return (
         <>
-            {modal.show && (
-                <div className="z-50 text-white absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black">
-                    <div className="w-80 bg-slate-900 h-36 p-2 flex flex-col justify-between text-center">
-                        <p className="text-lg">{modal.title}</p>
-                        <p className="text-sm text-slate-400">
-                            {modal.content}
-                        </p>
-                        <button
-                            className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg mb-5"
-                            onClick={() =>
-                                setModal({
-                                    show: false,
-                                    title: "Modal title",
-                                    content:
-                                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis non veniam ullam?",
-                                })
-                            }
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
+            <Modal
+                showModal={modal.show}
+                setShowModal={setModal}
+                title={modal.title}
+                content={modal.content}
+            />
             <div className="flex flex-col mx-auto w-72 p-4 text-center border justify-between border-gray-700 my-auto shadow-2xl">
                 <h1 className="text-2xl mb-4 text-center text-cyan-500">
                     Login
