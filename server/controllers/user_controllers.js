@@ -89,7 +89,10 @@ module.exports = {
                     const test = await User.find()
                         .where("email")
                         .equals(users[i]);
-                    userAvatarArray.push(test);
+                    userAvatarArray.push({
+                        email: test[0].email,
+                        avatar: test[0].avatar,
+                    });
                 }
                 return userAvatarArray;
             };

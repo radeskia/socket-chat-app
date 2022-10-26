@@ -39,41 +39,17 @@ const ChatApp = () => {
     }, []);
     // uniqueFinal.length && console.log(uniqueFinal);
 
-    const userAvatars = useQueries(
-        uniqueFinal.map(
-            (sender: string) => {
-                return {
-                    queryKey: [`${sender}`, sender],
-                    queryFn: () =>
-                        handleFetch(
-                            `http://192.168.100.181:3001/avatar/${sender}`,
-                            "GET"
-                        ),
-                };
-            },
-            {
-                enabled: !!uniqueFinal.length,
-            }
-        )
+    const toUrl = uniqueFinal.toString().replaceAll(",", "/");
+    const { isLoading: avatarsLoading, data: avatarsData } = useQuery(
+        [`avatars`, uniqueFinal],
+        () =>
+            handleFetch(`http://192.168.100.181:3001/avatars/${toUrl}`, "GET"),
+        {
+            enabled: !!uniqueFinal.length && !!toUrl.length,
+        }
     );
-    const avatarsLoading = userAvatars.some((avatars) => avatars.isLoading);
 
-    // !avatarsLoading && userAvatars && console.log(userAvatars);
-
-    const avatarsMemo = useMemo(() => {
-        let avatarData: any[] = [];
-
-        userAvatars.forEach((avatarQuery: any) => {
-            avatarData.push({
-                user: avatarQuery.data?.email,
-                avatar: avatarQuery.data?.avatar,
-            });
-        });
-
-        return avatarData;
-    }, [userAvatars]);
-
-    console.log(avatarsMemo);
+    !avatarsLoading && avatarsData?.length && console.log(avatarsData);
 
     const { isLoading: messagesLoading, data: messagesData } = useQuery(
         [`messages`, messages],
@@ -136,7 +112,7 @@ const ChatApp = () => {
 
     return (
         <>
-            {messages.length && avatarsMemo.length && !avatarsLoading ? (
+            {messages.length && avatarsData ? (
                 <div className="flex flex-col max-w-full p-2 text-center border justify-between border-gray-700 m-4 shadow-2xl">
                     <div className="flex flex-col mx-2">
                         <h1 className="text-lg text-blue-800 mb-4">
@@ -189,10 +165,10 @@ const ChatApp = () => {
                                             >
                                                 <img
                                                     src={`${
-                                                        avatarsMemo.find(
-                                                            (x) => {
+                                                        avatarsData.find(
+                                                            (user: any) => {
                                                                 return (
-                                                                    x.user ===
+                                                                    user.email ===
                                                                     message.sender
                                                                 );
                                                             }
