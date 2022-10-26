@@ -4,6 +4,7 @@ const message_controller = require("../controllers/message_controllers");
 const user_controller = require("../controllers/user_controllers");
 
 router
+    //Test routes
     .get("/", (req, res) => {
         console.log(`okay`);
         res.send(`okay`);
@@ -12,8 +13,13 @@ router
         console.log(`asd is okay too`);
         res.send(`asd is okay too`);
     })
+
+    //Message routes
     .get("/messages", message_controller.getAllMessages)
+
+    //User routes
     .post("/register", user_controller.register)
-    .post("/login", user_controller.login);
+    .post("/login", user_controller.login)
+    .get("/avatar/:id", user_controller.fetchAvatar);
 
 module.exports = router;

@@ -75,4 +75,27 @@ module.exports = {
             res.status(400).json(PrettyResponse);
         }
     },
+    fetchAvatar: async (req, res) => {
+        try {
+            // Check db if user exists
+            const checkDuplicate = await User.findOne({
+                email: req.body.email,
+            });
+            if (checkDuplicate) {
+                PrettyResponse.error = true;
+                PrettyResponse.message = "User already exists!";
+
+                res.status(409).json(PrettyResponse);
+            } else {
+                const user = await User.findOne({ email: req.params.id });
+
+                console.log(user.email);
+                res.end();
+                // PrettyResponse.error = false;
+                // PrettyResponse.message = "Success"
+                // PrettyResponse.data =
+                // res.status(200).json(PrettyResponse)
+            }
+        } catch (error) {}
+    },
 };

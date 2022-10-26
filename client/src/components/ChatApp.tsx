@@ -98,31 +98,54 @@ const ChatApp = () => {
                         </h1>
                         <div className="flex flex-col-reverse overflow-hidden max-h-96 overflow-y-auto scrollbar">
                             {reversed.map((message: any) => {
+                                console.log(message.sender === currentUser);
                                 return (
                                     <div
                                         className="flex justify-between"
                                         key={message._id}
                                     >
                                         <p
-                                            className={`flex text-gray-500 p-1 my-2 max-w-max px-2 items-end `}
+                                            className={`flex text-gray-500 p-1 my-2 px-2 items-end ${
+                                                currentUser === message.sender
+                                                    ? "order-1"
+                                                    : "order-2"
+                                            }`}
                                         >
                                             {format(
                                                 new Date(+message.time),
                                                 "HH:mm"
                                             )}
                                         </p>
-                                        {/* <div className="flex"> */}
-                                        <div className="flex">
+
+                                        <div
+                                            className={`flex ${
+                                                currentUser === message.sender
+                                                    ? "order-2"
+                                                    : "order-1"
+                                            }`}
+                                        >
                                             <p
-                                                className={`text-blue-500 p-1 flex items-center bg-gray-800 my-1 max-w-max rounded-md px-2 break-all text-justify `}
+                                                className={`text-blue-500 p-1 bg-gray-800 my-1 rounded-md px-2 break-all text-justify flex ${
+                                                    currentUser ===
+                                                    message.sender
+                                                        ? "order-1"
+                                                        : "order-2"
+                                                }`}
                                             >
                                                 {message.message}
                                             </p>
-                                            <div className="flex items-center m-2">
+                                            <div
+                                                className={`block my-auto mx-2 w-8 h-8 shrink-0 ${
+                                                    currentUser ===
+                                                    message.sender
+                                                        ? "order-2"
+                                                        : "order-1"
+                                                }`}
+                                            >
                                                 <img
                                                     src="https://imgur.com/fR03clc.png"
                                                     alt=""
-                                                    className="w-8 h-8"
+                                                    className="w-full h-auto"
                                                 />
                                             </div>
                                         </div>
