@@ -6,7 +6,7 @@ const TextField = ({ field, form, label, required, ...props }: any) => {
 
     return (
         <>
-            <div className="relative">
+            <div className="relative w-full">
                 <p className="text-lg text-blue-800">
                     {label ?? ""}
                     {required ? "*" : ""}

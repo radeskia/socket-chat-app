@@ -58,6 +58,7 @@ io.on("connection", (socket) => {
         try {
             const newMessage = new Message({
                 message: data.message,
+                sender: data.sender,
                 time: Date.now(),
             });
             await newMessage.save();

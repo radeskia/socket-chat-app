@@ -3,10 +3,13 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { handleFetch } from "../utils/handleFetch";
 import { useQuery } from "react-query";
+import { useAuth } from "../providers/auth-context";
 
 const socket = io.connect("http://192.168.100.181:3001");
 
 const ChatApp = () => {
+    const { currentUser } = useAuth();
+
     /*
     =============================================================
     TODO: Implement message "Draft" functionality that is hooked 
@@ -51,11 +54,15 @@ const ChatApp = () => {
     thus keeping the chat up to date.
     =============================================================*/
     const handleSendMessage = (message: any) => {
-        socket.emit("send_message", { message: `${message}` });
+        socket.emit("send_message", {
+            sender: currentUser,
+            message: `${message}`,
+        });
 
         const copy = [...messages];
         copy.push({
             _id: message + Date.now(),
+            sender: currentUser,
             message: message,
             time: Date.now(),
         });
@@ -66,6 +73,7 @@ const ChatApp = () => {
         const copy = [...messages];
         copy.push({
             _id: data.id,
+            sender: currentUser,
             message: data.message,
             time: Date.now(),
         });
@@ -83,25 +91,41 @@ const ChatApp = () => {
     return (
         <>
             {messages?.length ? (
-                <div className="flex flex-col mx-auto p-2 text-center border justify-between border-gray-700 my-auto shadow-2xl">
-                    <div className="flex flex-col">
-                        <h1 className="text-lg text-blue-800">Messages:</h1>
-                        <div className="flex flex-col-reverse overflow-hidden max-h-96 overflow-y-auto">
+                <div className="flex flex-col max-w-full p-2 text-center border justify-between border-gray-700 m-4 shadow-2xl">
+                    <div className="flex flex-col mx-2">
+                        <h1 className="text-lg text-blue-800 mb-4">
+                            Messages:
+                        </h1>
+                        <div className="flex flex-col-reverse overflow-hidden max-h-96 overflow-y-auto scrollbar">
                             {reversed.map((message: any) => {
                                 return (
                                     <div
                                         className="flex justify-between"
                                         key={message._id}
                                     >
-                                        <p className="flex text-gray-500 p-1 my-2 max-w-max px-2 items-end">
+                                        <p
+                                            className={`flex text-gray-500 p-1 my-2 max-w-max px-2 items-end `}
+                                        >
                                             {format(
                                                 new Date(+message.time),
                                                 "HH:mm"
                                             )}
                                         </p>
-                                        <p className="text-blue-500 p-1 bg-gray-800 my-2 max-w-fit px-2 break-all">
-                                            {message.message}
-                                        </p>
+                                        {/* <div className="flex"> */}
+                                        <div className="flex">
+                                            <p
+                                                className={`text-blue-500 p-1 flex items-center bg-gray-800 my-1 max-w-max rounded-md px-2 break-all text-justify `}
+                                            >
+                                                {message.message}
+                                            </p>
+                                            <div className="flex items-center m-2">
+                                                <img
+                                                    src="https://imgur.com/fR03clc.png"
+                                                    alt=""
+                                                    className="w-8 h-8"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -111,7 +135,7 @@ const ChatApp = () => {
                         <input
                             placeholder="Message..."
                             onChange={(e) => setMessage(e.target.value)}
-                            className="h-9 w-80 px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
+                            className="h-9 w-full px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
                         />
                         <button
                             className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg"
@@ -122,7 +146,7 @@ const ChatApp = () => {
                     </div>
                 </div>
             ) : (
-                "loading..."
+                <p className="text-white mx-auto">loading...</p>
             )}
         </>
     );
