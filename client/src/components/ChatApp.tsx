@@ -30,13 +30,14 @@ const ChatApp = () => {
     const [messages, setMessages] = useState<any[]>([]);
 
     const uniqueFinal: any[] = [];
-    messages.reduce((unique: any, o: any) => {
-        if (!unique.some((obj: any) => obj.sender === o.sender)) {
-            unique.push(o);
-            uniqueFinal.push(o.sender);
-        }
-        return unique;
-    }, []);
+    messages.length &&
+        messages.reduce((unique: any, o: any) => {
+            if (!unique.some((obj: any) => obj.sender === o.sender)) {
+                unique.push(o);
+                uniqueFinal.push(o.sender);
+            }
+            return unique;
+        }, []);
     // uniqueFinal.length && console.log(uniqueFinal);
 
     const toUrl = uniqueFinal.toString().replaceAll(",", "/");
@@ -49,7 +50,7 @@ const ChatApp = () => {
         }
     );
 
-    !avatarsLoading && avatarsData?.length && console.log(avatarsData);
+    !avatarsLoading && avatarsData && console.log(avatarsData.data);
 
     const { isLoading: messagesLoading, data: messagesData } = useQuery(
         [`messages`, messages],
@@ -113,7 +114,7 @@ const ChatApp = () => {
     return (
         <>
             {messages.length && avatarsData ? (
-                <div className="flex flex-col max-w-full p-2 text-center border justify-between border-gray-700 m-4 shadow-2xl">
+                <div className="flex flex-col max-w-full sm:p-2 text-center border justify-between border-gray-700 sm:m-2 shadow-2xl">
                     <div className="flex flex-col mx-2">
                         <h1 className="text-lg text-blue-800 mb-4">
                             Messages:
@@ -156,7 +157,7 @@ const ChatApp = () => {
                                                 {message.message}
                                             </p>
                                             <div
-                                                className={`block my-auto mx-2 w-8 h-8 shrink-0 ${
+                                                className={`block my-auto sm:mx-2 mr-2  w-8 h-8 shrink-0 ${
                                                     currentUser ===
                                                     message.sender
                                                         ? "order-2"
@@ -165,7 +166,7 @@ const ChatApp = () => {
                                             >
                                                 <img
                                                     src={`${
-                                                        avatarsData.find(
+                                                        avatarsData.data.find(
                                                             (user: any) => {
                                                                 return (
                                                                     user.email ===

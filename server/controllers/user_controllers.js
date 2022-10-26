@@ -98,8 +98,11 @@ module.exports = {
             };
             const results = await loopQueries();
 
-            console.log(results);
-            res.status(200).json(results);
+            PrettyResponse.error = false;
+            PrettyResponse.message = "Success";
+            PrettyResponse.data = results;
+
+            res.status(200).json(PrettyResponse);
 
             // const user = await User.findOne({ email: req.params.id });
 
