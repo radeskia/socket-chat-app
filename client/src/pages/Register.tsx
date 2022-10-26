@@ -20,7 +20,7 @@ const Register = () => {
         }
     };
 
-    const handleUserRegister = async (username: string) => {
+    const handleUserRegister = async () => {
         if (!handleMockValidation()) {
             setModal({
                 show: true,
@@ -28,10 +28,18 @@ const Register = () => {
                 content: "Please fill all the fields to continue registration",
             });
         } else {
-            await handleFetch("http://192.168.100.181:3001/register", "POST", {
-                username: username,
-                password: password,
-            });
+            try {
+                await handleFetch(
+                    "http://192.168.100.181:3001/register",
+                    "POST",
+                    {
+                        username: username,
+                        password: password,
+                    }
+                );
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
@@ -83,7 +91,7 @@ const Register = () => {
                     />
                     <button
                         className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg mb-5"
-                        onClick={() => handleUserRegister(username)}
+                        onClick={() => handleUserRegister()}
                     >
                         Register
                     </button>

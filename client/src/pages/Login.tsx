@@ -1,16 +1,50 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../providers/auth-context";
+import { handleFetch } from "../utils/handleFetch";
 
-const Login = ({ setUser }: any) => {
+const Login = () => {
     const navigate = useNavigate();
 
-    const [username, setUsername] = useState<string>("");
+    const { updateUser } = useAuth();
 
-    const handleUserLogin = (username: string) => {
-        localStorage.setItem("username", username);
-        setUser(username);
-        navigate("/chat");
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [modal, setModal] = useState<any>({
+        show: false,
+        title: "Modal title",
+        content:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis non veniam ullam?",
+    });
+
+    const handleMockValidation = () => {
+        if (!username || !password) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+    const handleUserLogin = async () => {
+        if (!handleMockValidation()) {
+            setModal({
+                show: true,
+                title: "Something went wrong",
+                content: "More specific error handling TBD.",
+            });
+        } else {
+            try {
+                await handleFetch("http://192.168.100.181:3001/login", "POST", {
+                    username: username,
+                    password: password,
+                });
+                updateUser(username);
+                localStorage.setItem("username", username);
+                navigate("/chat");
+            } catch (error) {
+                console.log(error);
+            }
+        }
     };
 
     return (
@@ -30,10 +64,11 @@ const Login = ({ setUser }: any) => {
                     placeholder="**********"
                     type="password"
                     className="h-9 px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded mb-6 shadow-lg"
+                    onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                     className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg mb-5"
-                    onClick={() => handleUserLogin(username)}
+                    onClick={() => handleUserLogin()}
                 >
                     Login
                 </button>

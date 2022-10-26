@@ -5,17 +5,11 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 
 const Unauthenticated = () => {
-    const [user, setUser] = useState<string>("");
-
-    useEffect(() => {
-        setUser(localStorage.getItem("username") ?? "");
-    }, []);
-
     return (
         <Routes>
-            <Route path="/login" element={<Login setUser={setUser} />}></Route>
+            <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
-            <Route path="*" element={<Login setUser={setUser} />}></Route>
+            <Route path="*" element={<Login />}></Route>
         </Routes>
     );
 };
