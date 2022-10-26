@@ -20,6 +20,6 @@ router
     //User routes
     .post("/register", user_controller.register)
     .post("/login", user_controller.login)
-    .get("/avatar/:id", user_controller.fetchAvatar);
+    .get("/avatars/*", user_controller.fetchAvatars);
 
 module.exports = router;

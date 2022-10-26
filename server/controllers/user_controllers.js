@@ -76,27 +76,35 @@ module.exports = {
             res.status(400).json(PrettyResponse);
         }
     },
-    fetchAvatar: async (req, res) => {
+    fetchAvatars: async (req, res) => {
         try {
-            // Check db if user exists
-            const checkExistence = await User.findOne({
-                email: req.body.email,
-            });
+            // Destructure route parameters into array
+            const users = req.params[0].split("/");
 
-            if (checkExistence) {
-                PrettyResponse.error = true;
-                PrettyResponse.message = "User already exists!";
+            // For each parameter send db query & package the results
+            const loopQueries = async () => {
+                const userAvatarArray = [];
 
-                res.status(409).json(PrettyResponse);
-            } else {
-                const user = await User.findOne({ email: req.params.id });
+                for (let i = 0; i < users.length; i++) {
+                    const test = await User.find()
+                        .where("email")
+                        .equals(users[i]);
+                    userAvatarArray.push(test);
+                }
+                return userAvatarArray;
+            };
+            const results = await loopQueries();
 
-                PrettyResponse.error = false;
-                PrettyResponse.message = "Success";
-                PrettyResponse.email = user.email;
-                PrettyResponse.avatar = user.avatar;
-                res.status(200).json(PrettyResponse);
-            }
+            console.log(results);
+            res.status(200).json(results);
+
+            // const user = await User.findOne({ email: req.params.id });
+
+            // PrettyResponse.error = false;
+            // PrettyResponse.message = "Success";
+            // PrettyResponse.email = user.email;
+            // PrettyResponse.avatar = user.avatar;
+            // res.status(200).json(PrettyResponse);
         } catch (error) {}
     },
 };
