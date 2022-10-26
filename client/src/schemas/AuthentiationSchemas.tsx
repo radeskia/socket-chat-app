@@ -5,6 +5,7 @@ export const AUTHENTICATION_REGISTER_SCHEMA = Yup.object({
     email: Yup.string()
         .email("Must be a valid email address")
         .required("Email is required!"),
+    avatar: Yup.string().url("Invalid URL!").required("Avatar is required!"),
     password: Yup.string()
         .min(8, "Password must be at least 8 characters long!")
         .matches(

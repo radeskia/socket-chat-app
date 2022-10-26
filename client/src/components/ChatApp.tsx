@@ -1,8 +1,8 @@
 import * as io from "socket.io-client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { handleFetch } from "../utils/handleFetch";
-import { useQuery } from "react-query";
+import { useQueries, useQuery } from "react-query";
 import { useAuth } from "../providers/auth-context";
 
 const socket = io.connect("http://192.168.100.181:3001");
@@ -28,6 +28,52 @@ const ChatApp = () => {
     a new fetch to display the latest message we send
     =============================================================*/
     const [messages, setMessages] = useState<any[]>([]);
+
+    const uniqueFinal: any[] = [];
+    messages.reduce((unique: any, o: any) => {
+        if (!unique.some((obj: any) => obj.sender === o.sender)) {
+            unique.push(o);
+            uniqueFinal.push(o.sender);
+        }
+        return unique;
+    }, []);
+    // uniqueFinal.length && console.log(uniqueFinal);
+
+    const userAvatars = useQueries(
+        uniqueFinal.map(
+            (sender: string) => {
+                return {
+                    queryKey: [`${sender}`, sender],
+                    queryFn: () =>
+                        handleFetch(
+                            `http://192.168.100.181:3001/avatar/${sender}`,
+                            "GET"
+                        ),
+                };
+            },
+            {
+                enabled: !!uniqueFinal.length,
+            }
+        )
+    );
+    const avatarsLoading = userAvatars.some((avatars) => avatars.isLoading);
+
+    // !avatarsLoading && userAvatars && console.log(userAvatars);
+
+    const avatarsMemo = useMemo(() => {
+        let avatarData: any[] = [];
+
+        userAvatars.forEach((avatarQuery: any) => {
+            avatarData.push({
+                user: avatarQuery.data?.email,
+                avatar: avatarQuery.data?.avatar,
+            });
+        });
+
+        return avatarData;
+    }, [userAvatars]);
+
+    console.log(avatarsMemo);
 
     const { isLoading: messagesLoading, data: messagesData } = useQuery(
         [`messages`, messages],
@@ -90,7 +136,7 @@ const ChatApp = () => {
 
     return (
         <>
-            {messages?.length ? (
+            {messages.length && avatarsMemo.length && !avatarsLoading ? (
                 <div className="flex flex-col max-w-full p-2 text-center border justify-between border-gray-700 m-4 shadow-2xl">
                     <div className="flex flex-col mx-2">
                         <h1 className="text-lg text-blue-800 mb-4">
@@ -98,7 +144,6 @@ const ChatApp = () => {
                         </h1>
                         <div className="flex flex-col-reverse overflow-hidden max-h-96 overflow-y-auto scrollbar">
                             {reversed.map((message: any) => {
-                                console.log(message.sender === currentUser);
                                 return (
                                     <div
                                         className="flex justify-between"
@@ -143,9 +188,18 @@ const ChatApp = () => {
                                                 }`}
                                             >
                                                 <img
-                                                    src="https://imgur.com/fR03clc.png"
+                                                    src={`${
+                                                        avatarsMemo.find(
+                                                            (x) => {
+                                                                return (
+                                                                    x.user ===
+                                                                    message.sender
+                                                                );
+                                                            }
+                                                        ).avatar
+                                                    }`}
                                                     alt=""
-                                                    className="w-full h-auto"
+                                                    className="w-full h-full rounded-full object-fill"
                                                 />
                                             </div>
                                         </div>

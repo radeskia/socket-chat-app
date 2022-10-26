@@ -59,7 +59,11 @@ const Register = () => {
                     Register
                 </h1>
                 <Formik
-                    initialValues={{ email: "", password: "" }}
+                    initialValues={{
+                        email: "",
+                        password: "",
+                        avatar: "",
+                    }}
                     validationSchema={AUTHENTICATION_REGISTER_SCHEMA}
                     enableReinitialize={true}
                     onSubmit={async (values) => {
@@ -83,6 +87,14 @@ const Register = () => {
                                 label="Password"
                                 required={true}
                                 placeholder="*************"
+                            />
+                            <Field
+                                name="avatar"
+                                type="text"
+                                component={TextField}
+                                label="Avatar URL"
+                                required={true}
+                                placeholder="https://picture.com/avatar.png"
                             />
                             <button
                                 className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg mb-5"

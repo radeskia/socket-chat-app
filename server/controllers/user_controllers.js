@@ -21,6 +21,7 @@ module.exports = {
                 // Create new user Object
                 const newUser = new User({
                     email: req.body.email,
+                    avatar: req.body.avatar,
                     password: req.body.password,
                 });
 
@@ -78,10 +79,11 @@ module.exports = {
     fetchAvatar: async (req, res) => {
         try {
             // Check db if user exists
-            const checkDuplicate = await User.findOne({
+            const checkExistence = await User.findOne({
                 email: req.body.email,
             });
-            if (checkDuplicate) {
+
+            if (checkExistence) {
                 PrettyResponse.error = true;
                 PrettyResponse.message = "User already exists!";
 
@@ -89,12 +91,11 @@ module.exports = {
             } else {
                 const user = await User.findOne({ email: req.params.id });
 
-                console.log(user.email);
-                res.end();
-                // PrettyResponse.error = false;
-                // PrettyResponse.message = "Success"
-                // PrettyResponse.data =
-                // res.status(200).json(PrettyResponse)
+                PrettyResponse.error = false;
+                PrettyResponse.message = "Success";
+                PrettyResponse.email = user.email;
+                PrettyResponse.avatar = user.avatar;
+                res.status(200).json(PrettyResponse);
             }
         } catch (error) {}
     },
