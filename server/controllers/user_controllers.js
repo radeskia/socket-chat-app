@@ -8,9 +8,9 @@ const PrettyResponse = {
 module.exports = {
     register: async (req, res) => {
         try {
-            // Check db if username exists
+            // Check db if email exists
             const checkDuplicate = await User.findOne({
-                username: req.body.username,
+                email: req.body.email,
             });
             if (checkDuplicate) {
                 PrettyResponse.error = true;
@@ -20,7 +20,7 @@ module.exports = {
             } else {
                 // Create new user Object
                 const newUser = new User({
-                    username: req.body.username,
+                    email: req.body.email,
                     password: req.body.password,
                 });
 
@@ -42,12 +42,12 @@ module.exports = {
         try {
             // Boolean check if user exists
             const checkUser = await User.findOne({
-                username: req.body.username,
+                email: req.body.email,
             });
 
             // Boolean check if user & password match
             const checkUserPassword = await User.findOne({
-                username: req.body.username,
+                email: req.body.email,
                 password: req.body.password,
             });
 

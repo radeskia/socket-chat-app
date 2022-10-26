@@ -11,8 +11,8 @@ const { Provider } = AuthContext;
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [userToken, setUserToken] = useState<string>(() => {
-        return localStorage.getItem("access_token")
-            ? localStorage.getItem("access_token") || ""
+        return localStorage.getItem("email")
+            ? localStorage.getItem("email") || ""
             : "";
     });
     const handleUserChange = (user: string) => {

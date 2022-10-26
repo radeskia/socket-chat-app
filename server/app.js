@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
                 time: Date.now(),
             });
             await newMessage.save();
-            console.log("Saved");
+            console.log("Message received & saved!");
         } catch (error) {
             console.log(error);
         }

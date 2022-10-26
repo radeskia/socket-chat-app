@@ -4,11 +4,7 @@ import Unauthenticated from "./layout/Unauthenticated";
 import { useAuth } from "./providers/auth-context";
 
 const App = () => {
-    const { currentUser, updateUser } = useAuth();
-
-    useEffect(() => {
-        updateUser(localStorage.getItem("username"));
-    }, []);
+    const { currentUser } = useAuth();
 
     return (
         <div className="bg-gray-900 min-h-screen flex items-center w-screen">

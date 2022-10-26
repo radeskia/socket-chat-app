@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import ChatApp from "../components/ChatApp";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 

@@ -32,13 +32,10 @@ export const handleFetch = async (
     try {
         const res = await fetch(url, { ...fetchOptions });
         // Check response status && return data or throw error
-        if (!res.ok) {
-            throw new Error(`status ${res.status}`);
-        } else {
-            const json = await res.json();
 
-            return json;
-        }
+        const json = await res.json();
+
+        return json;
     } catch (error: any) {
         throw Error(error);
     }

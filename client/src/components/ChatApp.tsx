@@ -13,18 +13,24 @@ const ChatApp = () => {
     /*
     =============================================================
     State that keeps all the messages
-    Messages get fetched from db, 
+    Messages get fetched from db, and are stored in this state,
+    also when sending a new message it gets added into this state
+    while being sent to the backend, this is so we dont wait for
+    a new fetch to display the latest message we send
     =============================================================*/
     const [messages, setMessages] = useState<any[]>([]);
 
     const { isLoading: messagesLoading, data: messagesData } = useQuery(
         [`messages`, messages],
-        () => handleFetch(`http://192.168.100.181:3001/messages`, "GET")
+        () => handleFetch(`http://192.168.100.181:3001/messages`, "GET"),
+        {
+            enabled: messages && !messages.length,
+        }
     );
     useEffect(() => {
         if (messagesLoading) return;
         setMessages(messagesData);
-    }, [messagesData]);
+    }, [messagesLoading]);
 
     console.log(messages);
 
@@ -55,7 +61,7 @@ const ChatApp = () => {
 
     return (
         <>
-            {messages.length ? (
+            {messages?.length ? (
                 <div className="flex flex-col mx-auto p-2 text-center border justify-between border-gray-700 my-auto shadow-2xl">
                     <div className="flex flex-col">
                         <h1 className="text-lg text-blue-800">Messages:</h1>
