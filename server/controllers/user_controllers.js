@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 const PrettyResponse = {
     error: false,
@@ -22,7 +23,7 @@ module.exports = {
                 const newUser = new User({
                     email: req.body.email,
                     avatar: req.body.avatar,
-                    password: req.body.password,
+                    password: await bcrypt.hash(req.body.password, 7),
                 });
 
                 // Await db save & return response
@@ -41,33 +42,33 @@ module.exports = {
     },
     login: async (req, res) => {
         try {
-            // Boolean check if user exists
-            const checkUser = await User.findOne({
+            // Check if user exists
+            const checkedUser = await User.findOne({
                 email: req.body.email,
             });
-
-            // Boolean check if user & password match
-            const checkUserPassword = await User.findOne({
-                email: req.body.email,
-                password: req.body.password,
-            });
-
-            // First check if user is found, then check if user & password match
-            if (!checkUser) {
+            if (!checkedUser) {
                 PrettyResponse.error = true;
                 PrettyResponse.message = "No such user found!";
 
-                res.status(409).json(PrettyResponse);
-            } else if (!checkUserPassword) {
+                return res.status(409).json(PrettyResponse);
+            }
+            // Compare received password with stored encrypted password
+            const checkedPass = bcrypt.compareSync(
+                req.body.password,
+                checkedUser.password
+            );
+
+            // First check if user is found, then check password
+            if (!checkedPass) {
                 PrettyResponse.error = true;
                 PrettyResponse.message = "Wrong password!";
 
-                res.status(403).json(PrettyResponse);
+                return res.status(403).json(PrettyResponse);
             } else {
                 PrettyResponse.error = false;
                 PrettyResponse.message = "Logged in!";
 
-                res.status(200).json(PrettyResponse);
+                return res.status(200).json(PrettyResponse);
             }
         } catch (error) {
             PrettyResponse.error = true;

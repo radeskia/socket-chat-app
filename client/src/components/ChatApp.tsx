@@ -30,7 +30,9 @@ const ChatApp = () => {
     const [messages, setMessages] = useState<any[]>([]);
 
     const uniqueFinal: any[] = [];
-    messages.length &&
+
+    messages &&
+        messages.length &&
         messages.reduce((unique: any, o: any) => {
             if (!unique.some((obj: any) => obj.sender === o.sender)) {
                 unique.push(o);
@@ -38,19 +40,16 @@ const ChatApp = () => {
             }
             return unique;
         }, []);
-    // uniqueFinal.length && console.log(uniqueFinal);
 
     const toUrl = uniqueFinal.toString().replaceAll(",", "/");
     const { isLoading: avatarsLoading, data: avatarsData } = useQuery(
-        [`avatars`, uniqueFinal],
+        [`avatars`],
         () =>
             handleFetch(`http://192.168.100.181:3001/avatars/${toUrl}`, "GET"),
         {
             enabled: !!uniqueFinal.length && !!toUrl.length,
         }
     );
-
-    !avatarsLoading && avatarsData && console.log(avatarsData.data);
 
     const { isLoading: messagesLoading, data: messagesData } = useQuery(
         [`messages`, messages],
@@ -108,12 +107,21 @@ const ChatApp = () => {
     We make a copy of the array and we reverse the order, so we 
     can show the latest messages at the bottom.
     =============================================================*/
-    const copyArr = [...messages];
-    const reversed = copyArr.reverse();
+    const [reversed, setReversed] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!messages || !messages.length) {
+            return;
+        }
+        const copyArr = [...messages];
+        setReversed(copyArr.reverse());
+    }, [messages]);
+
+    console.log(avatarsData);
 
     return (
         <>
-            {messages.length && avatarsData ? (
+            {reversed.length && avatarsData ? (
                 <div className="flex flex-col max-w-full sm:p-2 text-center border justify-between border-gray-700 sm:m-2 shadow-2xl">
                     <div className="flex flex-col mx-2">
                         <h1 className="text-lg text-blue-800 mb-4">

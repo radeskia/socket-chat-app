@@ -20,6 +20,12 @@ const mainRouter = require("./routes/index");
 // Initialize express app
 const app = express();
 
+// Morgan Logger
+const morgan = require("morgan");
+
+// Initialize logger
+app.use(morgan("dev"));
+
 // Middleware
 app.use(cors());
 
