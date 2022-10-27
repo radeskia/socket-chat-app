@@ -1,4 +1,9 @@
-const Modal = ({ showModal, setShowModal, title, content }: any) => {
+const NotificationModal = ({
+    showModal,
+    setShowModal,
+    title,
+    content,
+}: any) => {
     return (
         <div
             className={`${
@@ -26,4 +31,4 @@ const Modal = ({ showModal, setShowModal, title, content }: any) => {
     );
 };
 
-export default Modal;
+export default NotificationModal;

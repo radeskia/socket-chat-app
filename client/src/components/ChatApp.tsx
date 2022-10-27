@@ -4,11 +4,20 @@ import { format } from "date-fns";
 import { handleFetch } from "../utils/handleFetch";
 import { useQueries, useQuery } from "react-query";
 import { useAuth } from "../providers/auth-context";
+import UserProfileModal from "./Modals/UserProfileModal";
 
 const socket = io.connect("http://192.168.100.181:3001");
 
 const ChatApp = () => {
     const { currentUser } = useAuth();
+
+    // User Profile Modal
+    const [modal, setModal] = useState<any>({
+        show: false,
+        email: "User Email",
+        Avatar: "User Avatar",
+        MessageCount: "0",
+    });
 
     /*
     =============================================================
@@ -117,10 +126,17 @@ const ChatApp = () => {
         setReversed(copyArr.reverse());
     }, [messages]);
 
-    console.log(avatarsData);
+    console.log(modal);
 
     return (
         <>
+            <UserProfileModal
+                showModal={modal.show}
+                setShowModal={setModal}
+                avatar={modal.Avatar}
+                email={modal.email}
+                messageCount={modal.MessageCount}
+            />
             {reversed.length && avatarsData ? (
                 <div className="flex flex-col max-w-full sm:p-2 text-center border justify-between border-gray-700 sm:m-2 shadow-2xl">
                     <div className="flex flex-col mx-2">
@@ -146,7 +162,6 @@ const ChatApp = () => {
                                                 "HH:mm"
                                             )}
                                         </p>
-
                                         <div
                                             className={`flex ${
                                                 currentUser === message.sender
@@ -155,7 +170,7 @@ const ChatApp = () => {
                                             }`}
                                         >
                                             <p
-                                                className={`text-blue-500 p-1 bg-gray-800 my-1 rounded-md px-2 break-all text-justify flex ${
+                                                className={`text-blue-500 p-1 bg-gray-800 my-1 rounded-md px-2 break-all text-justify flex items-center ${
                                                     currentUser ===
                                                     message.sender
                                                         ? "order-1"
@@ -165,12 +180,35 @@ const ChatApp = () => {
                                                 {message.message}
                                             </p>
                                             <div
-                                                className={`block my-auto sm:mx-2 mr-2  w-8 h-8 shrink-0 ${
+                                                className={`block my-auto mx-2 w-8 h-8 shrink-0 cursor-pointer ${
                                                     currentUser ===
                                                     message.sender
                                                         ? "order-2"
                                                         : "order-1"
                                                 }`}
+                                                onClick={() =>
+                                                    setModal({
+                                                        show: true,
+                                                        email: message.sender,
+                                                        Avatar: avatarsData.data.find(
+                                                            (user: any) => {
+                                                                return (
+                                                                    user.email ===
+                                                                    message.sender
+                                                                );
+                                                            }
+                                                        ).avatar,
+                                                        MessageCount:
+                                                            messages.filter(
+                                                                (msg) => {
+                                                                    return (
+                                                                        msg.sender ===
+                                                                        message.sender
+                                                                    );
+                                                                }
+                                                            ).length,
+                                                    })
+                                                }
                                             >
                                                 <img
                                                     src={`${
@@ -181,10 +219,11 @@ const ChatApp = () => {
                                                                     message.sender
                                                                 );
                                                             }
-                                                        ).avatar
+                                                        ).avatar ||
+                                                        "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
                                                     }`}
                                                     alt=""
-                                                    className="w-full h-full rounded-full object-fill"
+                                                    className="w-full h-full rounded-full object-cover"
                                                 />
                                             </div>
                                         </div>

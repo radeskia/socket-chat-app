@@ -2,7 +2,7 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import TextField from "../components/Inputs/TextField";
-import Modal from "../components/Modal";
+import NotificationModal from "../components/Modals/NotificationModal";
 import { AUTHENTICATION_REGISTER_SCHEMA } from "../schemas/AuthentiationSchemas";
 import { handleFetch } from "../utils/handleFetch";
 
@@ -48,7 +48,7 @@ const Register = () => {
 
     return (
         <>
-            <Modal
+            <NotificationModal
                 showModal={modal.show}
                 setShowModal={setModal}
                 title={modal.title}

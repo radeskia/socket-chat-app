@@ -104,14 +104,11 @@ module.exports = {
             PrettyResponse.data = results;
 
             res.status(200).json(PrettyResponse);
+        } catch (error) {
+            PrettyResponse.error = true;
+            PrettyResponse.message = error.message;
 
-            // const user = await User.findOne({ email: req.params.id });
-
-            // PrettyResponse.error = false;
-            // PrettyResponse.message = "Success";
-            // PrettyResponse.email = user.email;
-            // PrettyResponse.avatar = user.avatar;
-            // res.status(200).json(PrettyResponse);
-        } catch (error) {}
+            res.status(400).json(PrettyResponse);
+        }
     },
 };
