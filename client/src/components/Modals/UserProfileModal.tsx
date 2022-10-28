@@ -30,8 +30,8 @@ const UserProfileModal = ({
                         setModal({
                             show: false,
                             email: "User Email",
-                            Avatar: "User Avatar",
-                            MessageCount: "0",
+                            avatar: "User Avatar",
+                            messageCount: "0",
                         })
                     }
                 >

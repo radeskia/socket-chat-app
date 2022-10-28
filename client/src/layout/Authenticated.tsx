@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import ChatApp from "../components/ChatApp";
+import ChatApp from "../components/ChatApp/ChatApp";
 
 const Authenticated = () => {
     return (
