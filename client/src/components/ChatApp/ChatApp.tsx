@@ -1,17 +1,41 @@
+// Utilities & externals
 import * as io from "socket.io-client";
-import { useState, useEffect, useMemo } from "react";
-import { format } from "date-fns";
-import { handleFetch } from "../../utils/handleFetch";
-import { useQueries, useQuery } from "react-query";
+// Hooks
+import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import { useAuth } from "../../providers/auth-context";
+import { handleFetch } from "../../utils/handleFetch";
+
+// Components
 import UserProfileModal from "../Modals/UserProfileModal";
 import ChatUsers from "../ChatUsers";
 import ChatMessages from "./ChatMessages";
 
-const socket = io.connect("http://192.168.100.181:3001");
-
 const ChatApp = () => {
     const { currentUser } = useAuth();
+
+    const socket = io.connect("http://192.168.100.181:3001", {
+        // autoConnect: false,
+        reconnection: false,
+    });
+
+    // TODO:Finish user online status functionality
+    useEffect(() => {
+        socket.connect();
+        socket.emit("online", {
+            email: currentUser,
+        });
+    }, []);
+
+    socket.on("online", (data) => {
+        console.log(`User ${data} is online!`);
+    });
+
+    const [currentChat, setCurrentChat] = useState<any>("11testUser@mail.com");
+
+    useEffect(() => {
+        localStorage.setItem("currentChat", currentChat);
+    }, [currentChat]);
 
     // User Profile Modal
     const [modal, setModal] = useState<any>({
@@ -40,39 +64,19 @@ const ChatApp = () => {
     =============================================================*/
     const [messages, setMessages] = useState<any[]>([]);
 
-    const uniqueFinal: any[] = [];
-
-    messages &&
-        messages.length &&
-        messages.reduce((unique: any, o: any) => {
-            if (!unique.some((obj: any) => obj.sender === o.sender)) {
-                unique.push(o);
-                uniqueFinal.push(o.sender);
-            }
-            return unique;
-        }, []);
-
-    const toUrl = uniqueFinal.toString().replaceAll(",", "/");
-    const { isLoading: avatarsLoading, data: avatarsData } = useQuery(
-        [`avatars`],
-        () =>
-            handleFetch(`http://192.168.100.181:3001/avatars/${toUrl}`, "GET"),
-        {
-            enabled: !!uniqueFinal.length && !!toUrl.length,
-        }
-    );
-
     const { isLoading: messagesLoading, data: messagesData } = useQuery(
-        [`messages`, messages],
-        () => handleFetch(`http://192.168.100.181:3001/messages`, "GET"),
-        {
-            enabled: messages && !messages.length,
-        }
+        [`messages`, currentChat, messages],
+        () =>
+            handleFetch(
+                `http://192.168.100.181:3001/chats/${currentUser}/${currentChat}`,
+                "GET"
+            )
     );
+
     useEffect(() => {
         if (messagesLoading) return;
-        setMessages(messagesData);
-    }, [messagesLoading]);
+        setMessages(messagesData.data);
+    }, [messagesData]);
 
     /*
     =============================================================
@@ -86,16 +90,19 @@ const ChatApp = () => {
     picked up, we update the local state with the received messages
     thus keeping the chat up to date.
     =============================================================*/
-    const handleSendMessage = (message: any) => {
+    const handleSendMessage = (messageContent: any) => {
         socket.emit("send_message", {
             sender: currentUser,
-            message: `${message}`,
+            receiver: currentChat,
+            message: `${messageContent}`,
+            time: Date.now(),
         });
 
         const copy = [...messages];
         copy.push({
             _id: message + Date.now(),
             sender: currentUser,
+            receiver: currentChat,
             message: message,
             time: Date.now(),
         });
@@ -106,29 +113,18 @@ const ChatApp = () => {
         const copy = [...messages];
         copy.push({
             _id: data.id,
-            sender: currentUser,
+            sender: data.sender,
+            receiver: data.receiver,
             message: data.message,
-            time: Date.now(),
+            time: data.time,
         });
         setMessages(copy);
     });
 
-    /*
-    =============================================================
-    We make a copy of the array and we reverse the order, so we 
-    can show the latest messages at the bottom.
-    =============================================================*/
-    const [reversed, setReversed] = useState<any[]>([]);
-
-    useEffect(() => {
-        if (!messages || !messages.length) {
-            return;
-        }
-        const copyArr = [...messages];
-        setReversed(copyArr.reverse());
-    }, [messages]);
-
-    console.log(modal);
+    const { isLoading: chatsLoading, data: chatsData } = useQuery(
+        [`avatars`, currentChat],
+        () => handleFetch(`http://192.168.100.181:3001/chats`, "GET")
+    );
 
     return (
         <>
@@ -140,10 +136,21 @@ const ChatApp = () => {
                 messageCount={modal.messageCount}
             />
 
-            {messages && messages.length && avatarsData ? (
-                <div className="flex sm:p-2 text-center border justify-between border-gray-700 sm:m-2 shadow-2xl">
-                    <ChatUsers />
-                    <ChatMessages />
+            {messages && messages.length && chatsData ? (
+                <div className="flex sm:p-2  text-center border justify-between border-gray-700 sm:m-2 shadow-2xl h-fit">
+                    <ChatUsers
+                        currentChat={currentChat}
+                        setCurrentChat={setCurrentChat}
+                        chatsData={chatsData}
+                    />
+                    <ChatMessages
+                        messages={messages}
+                        setModal={setModal}
+                        avatarsData={chatsData}
+                        message={message}
+                        setMessage={setMessage}
+                        handleSendMessage={handleSendMessage}
+                    />
                 </div>
             ) : (
                 <p className="text-white mx-auto">loading...</p>

@@ -24,7 +24,7 @@ const app = express();
 const morgan = require("morgan");
 
 // Initialize logger
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 
 // Middleware
 app.use(cors());
@@ -54,7 +54,19 @@ mongoose.connect(
 // INITIATE SOCKET.IO CONNECTION
 io.on("connection", (socket) => {
     // On new connection, log connection ID to console
-    console.log(`${socket.id} connected`);
+    // console.log(`${socket.id} connected`);
+
+    // Emit online status
+    socket.on("online", async (data) => {
+        socket.broadcast.emit("online", data.email);
+        console.log(`User online: ${data.email}`);
+    });
+
+    // // Emit offline status
+    // socket.on("offline", async (data) => {
+    //     socket.broadcast.emit("offline", data.email);
+    //     console.log(`User offline: ${data.email}`);
+    // });
 
     // On receiving a message, broadcast it to listeners & write to db
     socket.on("send_message", async (data) => {
@@ -65,6 +77,7 @@ io.on("connection", (socket) => {
             const newMessage = new Message({
                 message: data.message,
                 sender: data.sender,
+                receiver: data.receiver,
                 time: Date.now(),
             });
             await newMessage.save();

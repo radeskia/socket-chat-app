@@ -21,6 +21,7 @@ router
     .post("/register", user_controller.register)
     .post("/login", user_controller.login)
     .get("/avatars/*", user_controller.fetchAvatars)
-    .get("/chats/", user_controller.chats);
+    .get("/chats/", user_controller.chats)
+    .get("/chats/:fromUser/:toUser", message_controller.chatBetween);
 
 module.exports = router;

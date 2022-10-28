@@ -35,7 +35,6 @@ const Login = () => {
             } else {
                 updateUser(formData.email);
                 localStorage.setItem("email", formData.email);
-                console.log(formData.email);
             }
         } catch (error) {
             console.log(error);
