@@ -9,6 +9,10 @@ const Message = mongoose.Schema({
         type: String,
         required: [true, "Message sender is required!"],
     },
+    receiver: {
+        type: String,
+        required: [true, "Message receiver is required!"],
+    },
     time: {
         type: String,
         required: [true, "Message timestamp is required!"],
