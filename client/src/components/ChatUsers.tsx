@@ -1,7 +1,14 @@
 import { useAuth } from "../providers/auth-context";
 
-const ChatUsers = ({ currentChat, setCurrentChat, chatsData }: any) => {
+const ChatUsers = ({
+    currentChat,
+    setCurrentChat,
+    chatsData,
+    onlineUsers,
+}: any) => {
     const { currentUser } = useAuth();
+
+    console.log(onlineUsers);
 
     return (
         <div className="flex flex-col sm:p-2 text-center  sm:m-2 shadow-2xl">
@@ -15,11 +22,23 @@ const ChatUsers = ({ currentChat, setCurrentChat, chatsData }: any) => {
                             key={x.email}
                             onClick={() => setCurrentChat(x.email)}
                         >
-                            <img
-                                src={x.avatar}
-                                alt="User Avatar"
-                                className="mr-2 w-8 h-8 rounded-full object-cover"
-                            />
+                            <div className="relative">
+                                <img
+                                    src={x.avatar}
+                                    alt="User Avatar"
+                                    className="mr-2 w-10 h-10 rounded-full object-cover"
+                                />
+                                <div
+                                    className={`${
+                                        onlineUsers.find(
+                                            (entity: any) =>
+                                                entity.email === x.email
+                                        )
+                                            ? "bg-green-600"
+                                            : "bg-slate-700"
+                                    } rounded-full  w-4 h-4 absolute right-1 bottom-1 border-black border-2`}
+                                ></div>
+                            </div>
                             <p
                                 className={`${
                                     currentChat === x.email

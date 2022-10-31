@@ -111,7 +111,7 @@ module.exports = {
             res.status(400).json(PrettyResponse);
         }
     },
-    chats: async (req, res) => {
+    get_users: async (req, res) => {
         try {
             const users = await User.find({}, { password: 0, __v: 0 });
 

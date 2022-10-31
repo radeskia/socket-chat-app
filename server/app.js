@@ -75,9 +75,7 @@ io.on("connection", (socket) => {
             });
         }
         console.log(`Users online: `, onlineUsers);
-        socket.on("fetch_online", async () => {
-            io.to(socket.id).emit("online_users", onlineUsers);
-        });
+        io.emit("online_users", onlineUsers);
     });
 
     // // Emit offline status, disconnect & remove user from onlineUsers
@@ -90,15 +88,18 @@ io.on("connection", (socket) => {
         });
 
         // Remove user from onlineUsers
-        onlineUsers = onlineUsers.filter((entity) => {
-            entity.email !== data.email;
-        });
+        onlineUsers = onlineUsers.filter(
+            (entity) => entity.email !== data.email
+        );
+
+        io.emit("online_users", onlineUsers);
+        console.log(onlineUsers);
         socket.disconnect();
     });
 
     // SEND MESSAGE F
     socket.on("send_message", async (data) => {
-        // PRIVATE broadcast
+        // PRIVATE broadcast to receiver
         io.to(data.receiver).emit("receive_message", data);
 
         // Save new message to db
