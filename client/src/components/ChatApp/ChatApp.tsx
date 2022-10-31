@@ -12,7 +12,7 @@ import ChatUsers from "../ChatUsers";
 import ChatMessages from "./ChatMessages";
 
 const ChatApp = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, updateUser } = useAuth();
 
     const socket = io.connect("http://192.168.100.181:3001", {
         // autoConnect: false,
@@ -130,6 +130,18 @@ const ChatApp = () => {
         setMessages(copy);
     });
 
+    const handleLogout = () => {
+        socket.emit("logout", {
+            email: currentUser,
+        });
+        localStorage.removeItem("email");
+        updateUser("");
+    };
+
+    socket.on("disconnection", (data) => {
+        console.log(data.message);
+    });
+
     const { isLoading: chatsLoading, data: chatsData } = useQuery(
         [`avatars`, currentChat],
         () => handleFetch(`http://192.168.100.181:3001/chats`, "GET")
@@ -170,6 +182,12 @@ const ChatApp = () => {
                 ) : (
                     <p className="text-white mx-auto h-96">Select chat!</p>
                 )}
+                <button
+                    className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg"
+                    onClick={() => handleLogout()}
+                >
+                    Logout
+                </button>
             </div>
         </>
     );

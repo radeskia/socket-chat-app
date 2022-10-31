@@ -51,7 +51,7 @@ mongoose.connect(
     }
 );
 
-const onlineUsers = [];
+let onlineUsers = [];
 
 // INITIATE SOCKET.IO CONNECTION
 io.on("connection", (socket) => {
@@ -81,7 +81,33 @@ io.on("connection", (socket) => {
     });
 
     // // Emit offline status, disconnect
-    // socket.on("offline")
+    // socket.on("disconnect", () => {
+    //     io.to(socket.id).emit("disconnection", {
+    //         message: "bye bye connection",
+    //     });
+    // const index = onlineUsers.indexOf((entity) => entity.id === socket.id);
+
+    // onlineUsers.splice(index, 1);
+
+    //     console.log(`Disconnected: ${socket.id}`);
+    //     console.log(onlineUsers);
+    // });
+
+    // Logout2.0
+    socket.on("logout", (data) => {
+        //Dev console
+        console.log(`diss on ${data.email}`);
+        //Emit confirmation
+        io.to(socket.id).emit("disconnection", {
+            message: "bye bye connection",
+        });
+
+        // Remove user from onlineUsers
+        onlineUsers = onlineUsers.filter((entity) => {
+            entity.email !== data.email;
+        });
+        socket.disconnect();
+    });
 
     // SEND MESSAGE F
     socket.on("send_message", async (data) => {
