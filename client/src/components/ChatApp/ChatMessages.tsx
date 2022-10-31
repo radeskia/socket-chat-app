@@ -9,6 +9,7 @@ const ChatMessages = ({
     message,
     setMessage,
     handleSendMessage,
+    isTyping,
 }: any) => {
     const { currentUser } = useAuth();
 
@@ -122,9 +123,15 @@ const ChatMessages = ({
                                 );
                             })}
                     </div>
+                    {isTyping ? (
+                        <p className="text-blue-200">is typing...</p>
+                    ) : (
+                        ""
+                    )}
                     <input
                         placeholder="Message..."
                         onChange={(e) => setMessage(e.target.value)}
+                        value={message}
                         className="h-14 w-full px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
                     />
                     <button

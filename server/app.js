@@ -116,6 +116,14 @@ io.on("connection", (socket) => {
             console.log(error);
         }
     });
+
+    // TYPING STATUS
+    socket.on("imTyping", (data) => {
+        io.to(data.to).emit("isTyping");
+    });
+    socket.on("imNotTyping", (data) => {
+        io.to(data.to).emit("isNotTyping");
+    });
 });
 
 app.use("/", mainRouter);

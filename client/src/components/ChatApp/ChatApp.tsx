@@ -135,6 +135,7 @@ const ChatApp = () => {
             time: Date.now(),
         });
         setMessages(copy);
+        setMessage("");
     };
 
     const handleLogout = () => {
@@ -153,6 +154,30 @@ const ChatApp = () => {
         [`avatars`, currentChat],
         () => handleFetch(`http://192.168.100.181:3001/users`, "GET")
     );
+
+    useEffect(() => {
+        if (message.length) {
+            socket.emit("imTyping", {
+                from: currentUser,
+                to: currentChat,
+            });
+        } else {
+            socket.emit("imNotTyping", {
+                from: currentUser,
+                to: currentChat,
+            });
+        }
+    }, [message]);
+
+    const [isTyping, setIsTyping] = useState(false);
+
+    socket.on("isTyping", () => {
+        setIsTyping(true);
+    });
+
+    socket.on("isNotTyping", () => {
+        setIsTyping(false);
+    });
 
     return (
         <>
@@ -185,6 +210,7 @@ const ChatApp = () => {
                             message={message}
                             setMessage={setMessage}
                             handleSendMessage={handleSendMessage}
+                            isTyping={isTyping}
                         />
                     </>
                 ) : currentChat ? (
