@@ -80,23 +80,10 @@ io.on("connection", (socket) => {
         });
     });
 
-    // // Emit offline status, disconnect
-    // socket.on("disconnect", () => {
-    //     io.to(socket.id).emit("disconnection", {
-    //         message: "bye bye connection",
-    //     });
-    // const index = onlineUsers.indexOf((entity) => entity.id === socket.id);
-
-    // onlineUsers.splice(index, 1);
-
-    //     console.log(`Disconnected: ${socket.id}`);
-    //     console.log(onlineUsers);
-    // });
-
-    // Logout2.0
+    // // Emit offline status, disconnect & remove user from onlineUsers
     socket.on("logout", (data) => {
         //Dev console
-        console.log(`diss on ${data.email}`);
+        console.log(`Disconnected: ${data.email}`);
         //Emit confirmation
         io.to(socket.id).emit("disconnection", {
             message: "bye bye connection",
@@ -111,9 +98,10 @@ io.on("connection", (socket) => {
 
     // SEND MESSAGE F
     socket.on("send_message", async (data) => {
-        socket.broadcast.emit("receive_message", data);
+        // PRIVATE broadcast
+        io.to(data.receiver).emit("receive_message", data);
 
-        // Save new message
+        // Save new message to db
         try {
             const newMessage = new Message({
                 message: data.message,
