@@ -51,24 +51,39 @@ mongoose.connect(
     }
 );
 
+const onlineUsers = [];
+
 // INITIATE SOCKET.IO CONNECTION
 io.on("connection", (socket) => {
     // On new connection, log connection ID to console
     // console.log(`${socket.id} connected`);
 
-    // Emit online status
+    // Emit online status, join private room
     socket.on("online", async (data) => {
-        socket.broadcast.emit("online", data.email);
-        console.log(`User online: ${data.email}`);
+        // console.log(`User online: ${data.email}`);
+        await socket.join(data.email);
+
+        if (onlineUsers.some((entity) => entity.email === data.email)) {
+            const index = onlineUsers.findIndex(
+                (entity) => entity.email === data.email
+            );
+            onlineUsers.splice(index, 1, { email: data.email, id: socket.id });
+        } else {
+            onlineUsers.push({
+                email: data.email,
+                id: socket.id,
+            });
+        }
+        console.log(`Users online: `, onlineUsers);
+        socket.on("fetch_online", async () => {
+            io.to(socket.id).emit("online_users", onlineUsers);
+        });
     });
 
-    // // Emit offline status
-    // socket.on("offline", async (data) => {
-    //     socket.broadcast.emit("offline", data.email);
-    //     console.log(`User offline: ${data.email}`);
-    // });
+    // // Emit offline status, disconnect
+    // socket.on("offline")
 
-    // On receiving a message, broadcast it to listeners & write to db
+    // SEND MESSAGE F
     socket.on("send_message", async (data) => {
         socket.broadcast.emit("receive_message", data);
 

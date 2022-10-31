@@ -1,7 +1,7 @@
 // Utilities & externals
 import * as io from "socket.io-client";
 // Hooks
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { useAuth } from "../../providers/auth-context";
 import { handleFetch } from "../../utils/handleFetch";
@@ -20,16 +20,22 @@ const ChatApp = () => {
     });
 
     // TODO:Finish user online status functionality
-    useEffect(() => {
-        socket.connect();
-        socket.emit("online", {
-            email: currentUser,
-        });
+    useMemo(() => {
+        socket
+            .connect()
+            .emit("online", {
+                email: currentUser,
+            })
+            .emit("fetch_online");
     }, []);
 
-    socket.on("online", (data) => {
-        console.log(`User ${data} is online!`);
+    const [onlineUsers, setOnlineUsers] = useState();
+
+    socket.on("online_users", (data) => {
+        // console.log(data);
+        setOnlineUsers(data);
     });
+    console.log(onlineUsers);
 
     const [currentChat, setCurrentChat] = useState<any>("");
 
