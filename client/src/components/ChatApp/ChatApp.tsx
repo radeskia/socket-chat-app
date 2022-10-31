@@ -31,7 +31,7 @@ const ChatApp = () => {
         console.log(`User ${data} is online!`);
     });
 
-    const [currentChat, setCurrentChat] = useState<any>("11testUser@mail.com");
+    const [currentChat, setCurrentChat] = useState<any>("");
 
     useEffect(() => {
         localStorage.setItem("currentChat", currentChat);
@@ -70,11 +70,14 @@ const ChatApp = () => {
             handleFetch(
                 `http://192.168.100.181:3001/chats/${currentUser}/${currentChat}`,
                 "GET"
-            )
+            ),
+        {
+            enabled: !!currentUser && !!currentChat,
+        }
     );
 
     useEffect(() => {
-        if (messagesLoading) return;
+        if (messagesLoading || !messagesData) return;
         setMessages(messagesData.data);
     }, [messagesData]);
 
@@ -136,25 +139,32 @@ const ChatApp = () => {
                 messageCount={modal.messageCount}
             />
 
-            {messages && messages.length && chatsData ? (
-                <div className="flex sm:p-2  text-center border justify-between border-gray-700 sm:m-2 shadow-2xl h-fit">
+            <div className="flex sm:p-2  text-center border justify-between border-gray-700 sm:m-2 shadow-2xl h-fit">
+                {!chatsLoading && (
                     <ChatUsers
                         currentChat={currentChat}
                         setCurrentChat={setCurrentChat}
                         chatsData={chatsData}
                     />
-                    <ChatMessages
-                        messages={messages}
-                        setModal={setModal}
-                        avatarsData={chatsData}
-                        message={message}
-                        setMessage={setMessage}
-                        handleSendMessage={handleSendMessage}
-                    />
-                </div>
-            ) : (
-                <p className="text-white mx-auto">loading...</p>
-            )}
+                )}
+
+                {messages && messages.length && chatsData ? (
+                    <>
+                        <ChatMessages
+                            messages={messages}
+                            setModal={setModal}
+                            avatarsData={chatsData}
+                            message={message}
+                            setMessage={setMessage}
+                            handleSendMessage={handleSendMessage}
+                        />
+                    </>
+                ) : currentChat ? (
+                    <p className="text-white mx-auto h-96">Loading...</p>
+                ) : (
+                    <p className="text-white mx-auto h-96">Select chat!</p>
+                )}
+            </div>
         </>
     );
 };
