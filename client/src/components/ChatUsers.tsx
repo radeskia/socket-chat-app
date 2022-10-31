@@ -8,8 +8,6 @@ const ChatUsers = ({
 }: any) => {
     const { currentUser } = useAuth();
 
-    console.log(onlineUsers);
-
     return (
         <div className="flex flex-col sm:p-2 text-center  sm:m-2 shadow-2xl">
             {chatsData.data.map((x: any) => {

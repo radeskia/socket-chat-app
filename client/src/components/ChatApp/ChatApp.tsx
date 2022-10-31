@@ -36,10 +36,6 @@ const ChatApp = () => {
         setOnlineUsers(data);
     });
 
-    useEffect(() => {
-        console.log(onlineUsers);
-    }, [onlineUsers]);
-
     /*
     =============================================================
     Track & update currently active (open) chat
