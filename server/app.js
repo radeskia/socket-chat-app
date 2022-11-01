@@ -119,10 +119,17 @@ io.on("connection", (socket) => {
 
     // TYPING STATUS
     socket.on("imTyping", (data) => {
-        io.to(data.to).emit("isTyping");
+        io.to(data.to).emit("isTyping", {
+            from: data.from,
+            to: data.to,
+        });
     });
+
     socket.on("imNotTyping", (data) => {
-        io.to(data.to).emit("isNotTyping");
+        io.to(data.to).emit("isNotTyping", {
+            from: data.from,
+            to: data.to,
+        });
     });
 });
 

@@ -1,7 +1,7 @@
 // Utilities & externals
 import * as io from "socket.io-client";
 // Hooks
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useQuery } from "react-query";
 import { useAuth } from "../../providers/auth-context";
 import { handleFetch } from "../../utils/handleFetch";
@@ -41,6 +41,12 @@ const ChatApp = () => {
     Track & update currently active (open) chat
     =============================================================*/
     const [currentChat, setCurrentChat] = useState<any>("");
+
+    const currentChatRef = useRef(currentChat);
+
+    useEffect(() => {
+        currentChatRef.current = currentChat;
+    }, [currentChat]);
 
     /*
     =============================================================
@@ -97,7 +103,8 @@ const ChatApp = () => {
     thus keeping the chat up to date.
     =============================================================*/
 
-    socket.on("receive_message", (data) => {
+    socket.on("receive_message", async (data) => {
+        if (data.sender !== currentChat) return;
         const copy = [...messages];
         copy.push({
             _id: data.id,
@@ -151,10 +158,11 @@ const ChatApp = () => {
     });
 
     const { isLoading: chatUsersLoading, data: chatUsersData } = useQuery(
-        [`avatars`, currentChat],
+        [`chatUsers`],
         () => handleFetch(`http://192.168.100.181:3001/users`, "GET")
     );
 
+    // TYPING STATUS
     useEffect(() => {
         if (message.length) {
             socket.emit("imTyping", {
@@ -169,14 +177,25 @@ const ChatApp = () => {
         }
     }, [message]);
 
+    // State that keeps the typing status
     const [isTyping, setIsTyping] = useState(false);
 
-    socket.on("isTyping", () => {
-        setIsTyping(true);
+    // State that resets the typing to false when chat is changed
+    useEffect(() => {
+        setIsTyping(false);
+    }, [currentChat]);
+
+    // Socket listeners to update above state upon registering an event
+    socket.on("isTyping", (data) => {
+        if (data.to === currentUser && data.from === currentChatRef.current) {
+            setIsTyping(true);
+        }
     });
 
-    socket.on("isNotTyping", () => {
-        setIsTyping(false);
+    socket.on("isNotTyping", (data) => {
+        if (data.to === currentUser && data.from === currentChatRef.current) {
+            setIsTyping(false);
+        }
     });
 
     return (
