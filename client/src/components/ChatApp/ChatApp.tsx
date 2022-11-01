@@ -15,16 +15,10 @@ import ChatMessages from "./ChatMessages";
 const ChatApp = ({ socket }: any) => {
     const { currentUser, updateUser } = useAuth();
 
-    // const socket = io.connect("http://192.168.100.181:3001", {
-    //     // autoConnect: false,
-    //     reconnection: false,
-    // });
-
     useMemo(() => {
         socket.emit("online", {
             email: currentUser,
         });
-        // .emit("fetch_online");
     }, []);
 
     /*
@@ -209,7 +203,7 @@ const ChatApp = ({ socket }: any) => {
                 messageCount={modal.messageCount}
             />
 
-            <div className="flex text-center border justify-between border-gray-700 shadow-2xl max-h-screen">
+            <div className="flex text-center border justify-between border-gray-700 shadow-2xl h-screen">
                 {!chatUsersLoading && onlineUsers && onlineUsers.length ? (
                     <ChatUsers
                         currentChat={currentChat}
@@ -221,23 +215,17 @@ const ChatApp = ({ socket }: any) => {
                     <p className="text-white mx-auto h-96">Loading...</p>
                 )}
 
-                {messages && messages.length && chatUsersData ? (
-                    <>
-                        <ChatMessages
-                            messages={messages}
-                            setModal={setModal}
-                            avatarsData={chatUsersData}
-                            message={message}
-                            setMessage={setMessage}
-                            handleSendMessage={handleSendMessage}
-                            isTyping={isTyping}
-                        />
-                    </>
-                ) : currentChat ? (
-                    <p className="text-white mx-auto h-96">Loading...</p>
-                ) : (
-                    <p className="text-white mx-auto h-96">Select chat!</p>
-                )}
+                <ChatMessages
+                    messages={messages}
+                    setModal={setModal}
+                    avatarsData={chatUsersData}
+                    message={message}
+                    setMessage={setMessage}
+                    handleSendMessage={handleSendMessage}
+                    isTyping={isTyping}
+                    currentChat={currentChat}
+                />
+
                 <button
                     className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg hidden sm:block"
                     onClick={() => handleLogout()}

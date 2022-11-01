@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import ChatUsers from "./components/ChatApp/ChatUsers";
 import Authenticated from "./layout/Authenticated";
 import Unauthenticated from "./layout/Unauthenticated";
 import { useAuth } from "./providers/auth-context";
