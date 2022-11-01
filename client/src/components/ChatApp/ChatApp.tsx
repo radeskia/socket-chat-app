@@ -1,5 +1,6 @@
 // Utilities & externals
 import * as io from "socket.io-client";
+
 // Hooks
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useQuery } from "react-query";
@@ -8,16 +9,16 @@ import { handleFetch } from "../../utils/handleFetch";
 
 // Components
 import UserProfileModal from "../Modals/UserProfileModal";
-import ChatUsers from "../ChatUsers";
+import ChatUsers from "./ChatUsers";
 import ChatMessages from "./ChatMessages";
 
-const ChatApp = () => {
+const ChatApp = ({ socket }: any) => {
     const { currentUser, updateUser } = useAuth();
 
-    const socket = io.connect("http://192.168.100.181:3001", {
-        // autoConnect: false,
-        reconnection: false,
-    });
+    // const socket = io.connect("http://192.168.100.181:3001", {
+    //     // autoConnect: false,
+    //     reconnection: false,
+    // });
 
     useMemo(() => {
         socket.emit("online", {
@@ -32,7 +33,7 @@ const ChatApp = () => {
     =============================================================*/
     const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
 
-    socket.on("online_users", (data) => {
+    socket.on("online_users", (data: any) => {
         setOnlineUsers(data);
     });
 
@@ -103,7 +104,7 @@ const ChatApp = () => {
     thus keeping the chat up to date.
     =============================================================*/
 
-    socket.on("receive_message", async (data) => {
+    socket.on("receive_message", async (data: any) => {
         if (data.sender !== currentChat) return;
         const copy = [...messages];
         copy.push({
@@ -153,7 +154,7 @@ const ChatApp = () => {
         updateUser("");
     };
 
-    socket.on("disconnection", (data) => {
+    socket.on("disconnection", (data: any) => {
         console.log(data.message);
     });
 
@@ -186,13 +187,13 @@ const ChatApp = () => {
     }, [currentChat]);
 
     // Socket listeners to update above state upon registering an event
-    socket.on("isTyping", (data) => {
+    socket.on("isTyping", (data: any) => {
         if (data.to === currentUser && data.from === currentChatRef.current) {
             setIsTyping(true);
         }
     });
 
-    socket.on("isNotTyping", (data) => {
+    socket.on("isNotTyping", (data: any) => {
         if (data.to === currentUser && data.from === currentChatRef.current) {
             setIsTyping(false);
         }
@@ -208,7 +209,7 @@ const ChatApp = () => {
                 messageCount={modal.messageCount}
             />
 
-            <div className="flex sm:p-2  text-center border justify-between border-gray-700 sm:m-2 shadow-2xl h-fit">
+            <div className="flex text-center border justify-between border-gray-700 shadow-2xl max-h-screen">
                 {!chatUsersLoading && onlineUsers && onlineUsers.length ? (
                     <ChatUsers
                         currentChat={currentChat}
@@ -238,7 +239,7 @@ const ChatApp = () => {
                     <p className="text-white mx-auto h-96">Select chat!</p>
                 )}
                 <button
-                    className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg"
+                    className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg hidden sm:block"
                     onClick={() => handleLogout()}
                 >
                     Logout

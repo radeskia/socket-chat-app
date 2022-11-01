@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ChatUsers from "./components/ChatUsers";
+import ChatUsers from "./components/ChatApp/ChatUsers";
 import Authenticated from "./layout/Authenticated";
 import Unauthenticated from "./layout/Unauthenticated";
 import { useAuth } from "./providers/auth-context";
@@ -9,7 +9,7 @@ const App = () => {
 
     return (
         <div className="bg-gray-900 min-h-screen w-screen">
-            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-2 lg:gap-5 h-screen">
+            <div className="mx-2 sm:mx-10 xl:mx-96 h-screen">
                 {currentUser ? <Authenticated /> : <Unauthenticated />}
                 <div className="w-full text-white"></div>
             </div>

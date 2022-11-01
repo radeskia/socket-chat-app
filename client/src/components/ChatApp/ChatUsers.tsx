@@ -1,4 +1,4 @@
-import { useAuth } from "../providers/auth-context";
+import { useAuth } from "../../providers/auth-context";
 
 const ChatUsers = ({
     currentChat,
@@ -9,7 +9,7 @@ const ChatUsers = ({
     const { currentUser } = useAuth();
 
     return (
-        <div className="flex flex-col sm:p-2 text-center  sm:m-2 shadow-2xl">
+        <div className="hidden sm:flex flex-col sm:p-2 text-center sm:m-2 shadow-2xl">
             {chatsData.data.map((x: any) => {
                 if (currentUser === x.email) {
                     return;

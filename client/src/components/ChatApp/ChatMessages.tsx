@@ -29,12 +29,12 @@ const ChatMessages = ({
     }, [messages]);
 
     return (
-        <div className="flex flex-col mx-2 w-full">
+        <div className="flex flex-col mx-2 w-full max-h-screen">
             {messages.length ? (
-                <div>
+                <>
                     <h1 className="text-lg text-blue-800 mb-4">Messages:</h1>
 
-                    <div className="flex flex-col-reverse overflow-hidden h-96 overflow-y-auto scrollbar">
+                    <div className="flex flex-col-reverse overflow-hidden overflow-y-auto scrollbar">
                         {reversed.length &&
                             reversed.map((message: any) => {
                                 return (
@@ -132,7 +132,7 @@ const ChatMessages = ({
                         placeholder="Message..."
                         onChange={(e) => setMessage(e.target.value)}
                         value={message}
-                        className="h-14 w-full px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
+                        className="py-3 w-full px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
                     />
                     <button
                         className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg"
@@ -140,7 +140,7 @@ const ChatMessages = ({
                     >
                         Send message
                     </button>
-                </div>
+                </>
             ) : (
                 "Select chat"
             )}

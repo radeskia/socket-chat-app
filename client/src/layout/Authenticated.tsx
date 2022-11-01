@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import ChatApp from "../components/ChatApp/ChatApp";
+import SocketWrapper from "../components/ChatApp/SocketWrapper";
 
 const Authenticated = () => {
     return (
         <Routes>
-            <Route path="/chat" element={<ChatApp />}></Route>
-            <Route path="*" element={<ChatApp />}></Route>
+            <Route path="/chat" element={<SocketWrapper />}></Route>
+            <Route path="*" element={<SocketWrapper />}></Route>
         </Routes>
     );
 };
