@@ -30,7 +30,7 @@ const ChatMessages = ({
     }, [messages]);
 
     return (
-        <div className="flex flex-col mx-2 w-full max-h-screen">
+        <div className="flex flex-col mx-2 w-full max-h-full">
             {currentChat ? (
                 <>
                     {messages && messages.length ? (

@@ -202,36 +202,39 @@ const ChatApp = ({ socket }: any) => {
                 email={modal.email}
                 messageCount={modal.messageCount}
             />
+            {/* TODO */}
+            <div className="text-center border border-gray-700 shadow-2xl h-96">
+                <div className="block text-white">navbar</div>
+                <div className="flex h-full">
+                    {!chatUsersLoading && onlineUsers && onlineUsers.length ? (
+                        <ChatUsers
+                            currentChat={currentChat}
+                            setCurrentChat={setCurrentChat}
+                            chatsData={chatUsersData}
+                            onlineUsers={onlineUsers}
+                        />
+                    ) : (
+                        <p className="text-white mx-auto h-96">Loading...</p>
+                    )}
 
-            <div className="flex text-center border justify-between border-gray-700 shadow-2xl h-screen">
-                {!chatUsersLoading && onlineUsers && onlineUsers.length ? (
-                    <ChatUsers
+                    <ChatMessages
+                        messages={messages}
+                        setModal={setModal}
+                        avatarsData={chatUsersData}
+                        message={message}
+                        setMessage={setMessage}
+                        handleSendMessage={handleSendMessage}
+                        isTyping={isTyping}
                         currentChat={currentChat}
-                        setCurrentChat={setCurrentChat}
-                        chatsData={chatUsersData}
-                        onlineUsers={onlineUsers}
                     />
-                ) : (
-                    <p className="text-white mx-auto h-96">Loading...</p>
-                )}
 
-                <ChatMessages
-                    messages={messages}
-                    setModal={setModal}
-                    avatarsData={chatUsersData}
-                    message={message}
-                    setMessage={setMessage}
-                    handleSendMessage={handleSendMessage}
-                    isTyping={isTyping}
-                    currentChat={currentChat}
-                />
-
-                <button
-                    className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg hidden sm:block"
-                    onClick={() => handleLogout()}
-                >
-                    Logout
-                </button>
+                    <button
+                        className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg hidden sm:block h-12"
+                        onClick={() => handleLogout()}
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
         </>
     );
