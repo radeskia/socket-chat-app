@@ -236,7 +236,7 @@ const ChatApp = ({ socket }: any) => {
             from: currentChat,
             to: currentUser,
         });
-    }, [currentChat, messages]);
+    }, [currentChat, messages, message]);
 
     return (
         <>
