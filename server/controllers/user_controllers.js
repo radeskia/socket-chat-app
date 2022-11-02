@@ -22,7 +22,8 @@ module.exports = {
                 // Create new user Object
                 const newUser = new User({
                     email: req.body.email,
-                    avatar: req.body.avatar,
+                    avatar:
+                        req.body.avatar || "https://i.imgur.com/fR03clc.png",
                     password: await bcrypt.hash(req.body.password, 7),
                 });
 
