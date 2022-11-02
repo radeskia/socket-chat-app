@@ -9,7 +9,7 @@ const ChatUsers = ({
     const { currentUser } = useAuth();
 
     return (
-        <div className="hidden sm:flex flex-col sm:p-2 text-center sm:m-2 shadow-2xl h-full">
+        <div className="hidden sm:flex flex-col sm:px-2 text-center sm:mx-2 shadow-2xl h-full">
             {chatsData.data.map((x: any) => {
                 if (currentUser === x.email) {
                     return;

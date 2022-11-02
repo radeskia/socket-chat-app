@@ -203,8 +203,8 @@ const ChatApp = ({ socket }: any) => {
                 messageCount={modal.messageCount}
             />
             {/* TODO */}
-            <div className="text-center border border-gray-700 shadow-2xl h-96">
-                <div className="block text-white">navbar</div>
+            <div className="text-center border border-gray-700 shadow-2xl h-screen py-4">
+                {/* <div className="block text-white">navbar</div> */}
                 <div className="flex h-full">
                     {!chatUsersLoading && onlineUsers && onlineUsers.length ? (
                         <ChatUsers
