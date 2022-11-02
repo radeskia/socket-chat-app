@@ -198,7 +198,15 @@ const ChatApp = ({ socket }: any) => {
         }
     });
 
-    // SEEN STATUS FEATURE
+    /*
+    =============================================================
+    SEEN STATUS FEATURE
+    Upon opening a chat, or upon manually updating the messages 
+    array, emit a "mark_seen" event with the "from" property as
+    the opened chat and "to" as the currently logged in user.
+    The backend finds all messages sent FROM the currently opened
+    chat TO the currently logged user and marks them as seen.
+    =============================================================*/
     useEffect(() => {
         if (!currentChat) return;
         socket.emit("mark_seen", {
