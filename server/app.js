@@ -135,6 +135,7 @@ io.on("connection", (socket) => {
 
     // SEEN STATUS
     socket.on("mark_seen", async (data) => {
+        io.to(data.from).emit("marked_seen");
         await Message.updateMany(
             {
                 sender: data.from,

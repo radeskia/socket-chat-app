@@ -229,14 +229,44 @@ const ChatApp = ({ socket }: any) => {
     the opened chat and "to" as the currently logged in user.
     The backend finds all messages sent FROM the currently opened
     chat TO the currently logged user and marks them as seen.
+    After marking messages as seen, listen for the "marked_seen"
+    event. Upon catching the "marked_seen" event, check whether 
+    messages array has length AND if ANY of the messages have false
+    status. This last part is so we dont update state if not 
+    needed, aka all messages already seen.
     =============================================================*/
     useEffect(() => {
-        if (!currentChat) return;
+        if (
+            !currentChat ||
+            !messages ||
+            messages.every((entity) => entity.seen === true)
+        )
+            return;
         socket.emit("mark_seen", {
             from: currentChat,
             to: currentUser,
         });
     }, [currentChat, messages, message]);
+
+    socket.on("marked_seen", () => {
+        if (
+            messages.length &&
+            messages.some((entity) => entity.seen === false)
+        ) {
+            const updatedMessages = messages.map((entity) => {
+                return {
+                    message: entity.message,
+                    _id: entity._id,
+                    receiver: entity.receiver,
+                    sender: entity.sender,
+                    time: entity.time,
+                    __v: entity.__v,
+                    seen: true,
+                };
+            });
+            setMessages(updatedMessages);
+        }
+    });
 
     return (
         <>
