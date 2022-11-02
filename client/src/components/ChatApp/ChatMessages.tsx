@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { useAuth } from "../../providers/auth-context";
+import ChatUsers from "./ChatUsers";
 
 const ChatMessages = ({
     messages,
@@ -29,15 +30,22 @@ const ChatMessages = ({
         setReversed(copyArr.reverse());
     }, [messages]);
 
+    const [showUsers, setShowUsers] = useState(false);
+
     return (
         <div className="flex flex-col mx-2 w-full justify-between">
-            {currentChat ? (
-                <>
-                    {messages && messages.length ? (
+            <>
+                <div>
+                    <div className="text-lg text-white flex justify-between">
+                        <div>Users</div>
+                        <div>Navbar</div>
+                        <div>Logout</div>
+                    </div>
+                    <h1 className="text-lg text-blue-800 mb-4">Messages:</h1>
+                </div>
+                {currentChat ? (
+                    messages && messages.length ? (
                         <>
-                            <h1 className="text-lg text-blue-800 mb-4 top">
-                                Messages:
-                            </h1>
                             <div className="flex flex-col overflow-hidden ">
                                 <div className="flex flex-col-reverse overflow-hidden overflow-y-auto scrollbar">
                                     {reversed.length &&
@@ -166,11 +174,11 @@ const ChatMessages = ({
                         </>
                     ) : (
                         <p className="text-white mx-auto h-96">Loading...</p>
-                    )}
-                </>
-            ) : (
-                <p className="text-white mx-auto h-96">Select chat!</p>
-            )}
+                    )
+                ) : (
+                    <p className="text-white mx-auto h-96">Select chat!</p>
+                )}
+            </>
         </div>
     );
 };
