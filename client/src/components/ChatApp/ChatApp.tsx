@@ -37,6 +37,11 @@ const ChatApp = ({ socket }: any) => {
     /*
     =============================================================
     Track & update currently active (open) chat
+    
+    NOTE: The useRef hook is used for the "isTyping" feature so the
+    emitter has access to the LATEST value of the state (fixes the 
+    problem where event listeners dont receive the latest change 
+    in state)
     =============================================================*/
     const [currentChat, setCurrentChat] = useState<any>("");
 
