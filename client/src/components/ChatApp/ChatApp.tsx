@@ -23,7 +23,10 @@ const ChatApp = ({ socket }: any) => {
 
     /*
     =============================================================
-    Track & update currently online users
+    ONLINE USERS FEATURE
+    Upon successful connection, the backend emits an event named
+    "online_users" which contains an array of currently online users.
+    We update the state based on the received data.
     =============================================================*/
     const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
 
@@ -70,7 +73,11 @@ const ChatApp = ({ socket }: any) => {
     Messages get fetched from db, and are stored in this state,
     also when sending a new message it gets added into this state
     while being sent to the backend, this is so we dont wait for
-    a new fetch to display the latest message we send
+    a new fetch to display the latest message we send.
+
+    The messages fetched are from an endpoint that receives the 
+    currently logged in user and the currently opened chat.
+    Main refetch happends when changing the currently opened chat.
     =============================================================*/
     const [messages, setMessages] = useState<any[]>([]);
 
@@ -94,7 +101,8 @@ const ChatApp = ({ socket }: any) => {
     /*
     =============================================================
     In the socket event listener when the "receive_message" event is 
-    picked up, we update the local state with the received messages
+    picked up AND the sender is the same as the currently opened chat,
+    we update the local state with the received messages
     thus keeping the chat up to date.
     =============================================================*/
 
@@ -145,6 +153,7 @@ const ChatApp = ({ socket }: any) => {
         setMessage("");
     };
 
+    //
     const handleLogout = () => {
         socket.emit("logout", {
             email: currentUser,
@@ -157,12 +166,21 @@ const ChatApp = ({ socket }: any) => {
         console.log(data.message);
     });
 
+    // Get all users, used to make a chat icon for each
     const { isLoading: chatUsersLoading, data: chatUsersData } = useQuery(
         [`chatUsers`],
         () => handleFetch(`http://192.168.100.181:3001/users`, "GET")
     );
 
-    // TYPING STATUS
+    /*
+    =============================================================
+    TYPING STATUS FEATURE
+    Firstly attach a side effect on the message (currently typed message),
+    if there is content in the currently typed message, emit a 
+    "imTyping" event and supplying the backend with data as to 
+    WHO is typing to WHOM. If the message is empty and isn't changing
+    emit a "imNotTyping" event also supplying the same fields as above.
+    =============================================================*/
     useEffect(() => {
         if (message.length) {
             socket.emit("imTyping", {
@@ -177,7 +195,7 @@ const ChatApp = ({ socket }: any) => {
         }
     }, [message]);
 
-    // State that keeps the typing status
+    // State that keeps the typing status of the oppened chat
     const [isTyping, setIsTyping] = useState(false);
 
     // State that resets the typing to false when chat is changed
