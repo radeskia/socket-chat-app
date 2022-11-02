@@ -12,6 +12,7 @@ const ChatMessages = ({
     handleSendMessage,
     isTyping,
     currentChat,
+    handleLogout,
 }: any) => {
     const { currentUser } = useAuth();
 
@@ -30,16 +31,19 @@ const ChatMessages = ({
         setReversed(copyArr.reverse());
     }, [messages]);
 
-    const [showUsers, setShowUsers] = useState(false);
-
     return (
         <div className="flex flex-col mx-2 w-full justify-between">
             <>
                 <div>
-                    <div className="text-lg text-white flex justify-between">
+                    <div className="text-lg text-white flex justify-between items-center">
                         <div>Users</div>
                         <div>Navbar</div>
-                        <div>Logout</div>
+                        <button
+                            className="bg-gray-600 hover:bg-gray-500 px-5 py-1 my-2 rounded shadow-lg text-sm"
+                            onClick={() => handleLogout()}
+                        >
+                            Logout
+                        </button>
                     </div>
                     <h1 className="text-lg text-blue-800 mb-4">Messages:</h1>
                 </div>
@@ -81,7 +85,7 @@ const ChatMessages = ({
                                                                 : "order-1"
                                                         }`}
                                                     >
-                                                        <p
+                                                        <div
                                                             className={`text-blue-500 p-1 bg-gray-800 my-1 rounded-md px-2 break-all text-justify flex items-center ${
                                                                 currentUser ===
                                                                 message.sender
@@ -89,8 +93,13 @@ const ChatMessages = ({
                                                                     : "order-2"
                                                             }`}
                                                         >
-                                                            {message.message}
-                                                        </p>
+                                                            <p>
+                                                                {
+                                                                    message.message
+                                                                }
+                                                            </p>
+                                                            <p>SEEN</p>
+                                                        </div>
                                                         <div
                                                             className={`block my-auto mx-2 w-8 h-8 shrink-0 cursor-pointer ${
                                                                 currentUser ===

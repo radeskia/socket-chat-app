@@ -271,14 +271,8 @@ const ChatApp = ({ socket }: any) => {
                         handleSendMessage={handleSendMessage}
                         isTyping={isTyping}
                         currentChat={currentChat}
+                        handleLogout={handleLogout}
                     />
-
-                    <button
-                        className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg hidden sm:block h-12"
-                        onClick={() => handleLogout()}
-                    >
-                        Logout
-                    </button>
                 </div>
             </div>
         </>
