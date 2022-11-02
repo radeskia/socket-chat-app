@@ -2,8 +2,8 @@
 
 ## Technologies used
 ### Frontend
-->Typescript
-->React.js (Vite scaffold)
+#### ->Typescript
+#### ->React.js (Vite scaffold)
 ->Socket.io
 ->React-Router v6
 ->Formik
