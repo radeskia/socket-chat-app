@@ -2,23 +2,26 @@
 
 ## Technologies used
 ### Frontend
-#### ->Typescript
-#### ->React.js (Vite scaffold)
-->Socket.io
-->React-Router v6
-->Formik
-->Yup
-->Tailwind
-->date-fns
+##### ->`Typescript`  
+##### ->`React.js` (Vite scaffold)  
+##### ->`Socket.io`  
+##### ->`React-Router` v6  
+##### ->`Formik`  
+##### ->`Yup`  
+##### ->`Tailwind`  
+##### ->`date-fns`
 
 ### Backend
-->Javascript
-->Node.js (v18.3.0)
-->Express
-->MongoDB
-->Mongoose
-->bcrypt
-
+##### ->`Javascript`  
+##### ->`Node.js` (v18.3.0)  
+##### ->`Express`  
+##### ->`MongoDB`  
+##### ->`Mongoose`  
+##### ->`bcrypt`  
+  
+  
+  
+####
 ## Features
 ### User is typing
 -Upon opening a chat with another user, you get live updates when the other user is typing a message for you.
@@ -31,7 +34,7 @@
 
 
 ## Upcoming
-->Group chat rooms
-->OAuth2.0
+->Group chat rooms  
+->OAuth2.0  
 ->React Native version
 
