@@ -108,6 +108,7 @@ io.on("connection", (socket) => {
                 message: data.message,
                 sender: data.sender,
                 receiver: data.receiver,
+                seen: false,
                 time: Date.now(),
             });
             await newMessage.save();
@@ -130,6 +131,18 @@ io.on("connection", (socket) => {
             from: data.from,
             to: data.to,
         });
+    });
+
+    // SEEN STATUS
+    socket.on("mark_seen", async (data) => {
+        await Message.updateMany(
+            {
+                sender: data.from,
+                receiver: data.to,
+            },
+            { $set: { seen: true } }
+        );
+        console.log(`Marked seen from ${data.from} to ${data.to}`);
     });
 });
 

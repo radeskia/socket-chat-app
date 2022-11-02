@@ -17,6 +17,10 @@ const Message = mongoose.Schema({
         type: String,
         required: [true, "Message timestamp is required!"],
     },
+    seen: {
+        type: Boolean,
+        required: [true, "Message seen status is required!"],
+    },
 });
 
 module.exports = mongoose.model("Message", Message);

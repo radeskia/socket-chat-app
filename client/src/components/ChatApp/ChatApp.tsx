@@ -99,16 +99,20 @@ const ChatApp = ({ socket }: any) => {
     =============================================================*/
 
     socket.on("receive_message", async (data: any) => {
-        if (data.sender !== currentChat) return;
-        const copy = [...messages];
-        copy.push({
-            _id: data.id,
-            sender: data.sender,
-            receiver: data.receiver,
-            message: data.message,
-            time: data.time,
-        });
-        setMessages(copy);
+        if (data.sender !== currentChat) {
+            return;
+        } else {
+            const copy = [...messages];
+            copy.push({
+                _id: data.id,
+                sender: data.sender,
+                receiver: data.receiver,
+                message: data.message,
+                seen: data.seen,
+                time: data.time,
+            });
+            setMessages(copy);
+        }
     });
 
     // ACTION HANDLERS
@@ -134,6 +138,7 @@ const ChatApp = ({ socket }: any) => {
             sender: currentUser,
             receiver: currentChat,
             message: message,
+            seen: false,
             time: Date.now(),
         });
         setMessages(copy);
@@ -192,6 +197,15 @@ const ChatApp = ({ socket }: any) => {
             setIsTyping(false);
         }
     });
+
+    // SEEN STATUS FEATURE
+    useEffect(() => {
+        if (!currentChat) return;
+        socket.emit("mark_seen", {
+            from: currentChat,
+            to: currentUser,
+        });
+    }, [currentChat, messages]);
 
     return (
         <>
