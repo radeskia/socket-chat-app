@@ -51,7 +51,7 @@ const ChatApp = ({ socket }: any) => {
 
     const currentChatRef = useRef(currentChat);
 
-    useEffect(() => {
+    useMemo(() => {
         currentChatRef.current = currentChat;
     }, [currentChat]);
 
@@ -103,7 +103,7 @@ const ChatApp = ({ socket }: any) => {
         }
     );
 
-    useEffect(() => {
+    useMemo(() => {
         if (!messagesData) return;
         setMessages(messagesData.data);
     }, [messagesData]);
@@ -117,7 +117,7 @@ const ChatApp = ({ socket }: any) => {
     =============================================================*/
 
     socket.on("receive_message", async (data: any) => {
-        if (data.sender !== currentChat) {
+        if (data.sender !== currentChatRef.current) {
             return;
         } else {
             const copy = [...messages];
@@ -185,7 +185,7 @@ const ChatApp = ({ socket }: any) => {
     WHO is typing to WHOM. If the message is empty and isn't changing
     emit a "imNotTyping" event also supplying the same fields as above.
     =============================================================*/
-    useEffect(() => {
+    useMemo(() => {
         if (message && message.length) {
             socket.emit("imTyping", {
                 from: currentUser,
@@ -203,7 +203,7 @@ const ChatApp = ({ socket }: any) => {
     const [isTyping, setIsTyping] = useState(false);
 
     // State that resets the typing to false when chat is changed
-    useEffect(() => {
+    useMemo(() => {
         setIsTyping(false);
     }, [currentChat]);
 
