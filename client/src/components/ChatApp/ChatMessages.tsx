@@ -85,19 +85,6 @@ const ChatMessages = ({
                                 ) : (
                                     <p className="invisible">.</p>
                                 )}
-
-                                <input
-                                    placeholder="Message..."
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    value={message}
-                                    className="py-3 w-full px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
-                                />
-                                <button
-                                    className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg"
-                                    onClick={() => handleSendMessage(message)}
-                                >
-                                    Send message
-                                </button>
                             </div>
                         </>
                     ) : (
@@ -106,6 +93,18 @@ const ChatMessages = ({
                 ) : (
                     <p className="text-white mx-auto h-96">Select chat!</p>
                 )}
+                <input
+                    placeholder="Message..."
+                    onChange={(e) => setMessage(e.target.value)}
+                    value={message ?? ""}
+                    className="py-3 w-full px-4 mt-2 bg-gray-800 text-blue-50 outline-none rounded shadow-lg"
+                />
+                <button
+                    className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg"
+                    onClick={() => handleSendMessage(message)}
+                >
+                    Send message
+                </button>
             </>
         </div>
     );

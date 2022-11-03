@@ -12,6 +12,10 @@ import UserProfileModal from "../Modals/UserProfileModal";
 import ChatUsers from "./ChatUsers";
 import ChatMessages from "./ChatMessages";
 
+// Interfaces
+import { ModalProps } from "../../interfaces/ModalProps";
+import { UserObject } from "../../interfaces/UserObject";
+
 const ChatApp = ({ socket }: any) => {
     const { currentUser, updateUser } = useAuth();
 
@@ -30,7 +34,7 @@ const ChatApp = ({ socket }: any) => {
     =============================================================*/
     const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
 
-    socket.on("online_users", (data: any) => {
+    socket.on("online_users", (data: UserObject[]) => {
         setOnlineUsers(data);
     });
 
@@ -43,7 +47,7 @@ const ChatApp = ({ socket }: any) => {
     problem where event listeners dont receive the latest change 
     in state)
     =============================================================*/
-    const [currentChat, setCurrentChat] = useState<any>("");
+    const [currentChat, setCurrentChat] = useState<string>("");
 
     const currentChatRef = useRef(currentChat);
 
@@ -55,7 +59,7 @@ const ChatApp = ({ socket }: any) => {
     =============================================================
     Track & update current modal state and content
     =============================================================*/
-    const [modal, setModal] = useState<any>({
+    const [modal, setModal] = useState<ModalProps>({
         show: false,
         email: "User Email",
         avatar: "User Avatar",
@@ -70,7 +74,7 @@ const ChatApp = ({ socket }: any) => {
     local storage (e.g every 10 seconds after the latest onChange)
     =============================================================*/
 
-    const [message, setMessage] = useState<any>("");
+    const [message, setMessage] = useState<string>();
 
     /*
     =============================================================
@@ -128,7 +132,6 @@ const ChatApp = ({ socket }: any) => {
         }
     });
 
-    // ACTION HANDLERS
     /*
     =============================================================
     Send message handler & socket event listener
@@ -147,7 +150,7 @@ const ChatApp = ({ socket }: any) => {
 
         const copy = [...messages];
         copy.push({
-            _id: message + Date.now(),
+            _id: message + Date.now().toString(),
             sender: currentUser,
             receiver: currentChat,
             message: message,
@@ -158,7 +161,6 @@ const ChatApp = ({ socket }: any) => {
         setMessage("");
     };
 
-    //
     const handleLogout = () => {
         socket.emit("logout", {
             email: currentUser,
@@ -166,10 +168,6 @@ const ChatApp = ({ socket }: any) => {
         localStorage.removeItem("email");
         updateUser("");
     };
-
-    socket.on("disconnection", (data: any) => {
-        console.log(data.message);
-    });
 
     // Get all users, used to make a chat icon for each
     const { isLoading: chatUsersLoading, data: chatUsersData } = useQuery(
@@ -187,7 +185,7 @@ const ChatApp = ({ socket }: any) => {
     emit a "imNotTyping" event also supplying the same fields as above.
     =============================================================*/
     useEffect(() => {
-        if (message.length) {
+        if (message && message.length) {
             socket.emit("imTyping", {
                 from: currentUser,
                 to: currentChat,
@@ -277,9 +275,7 @@ const ChatApp = ({ socket }: any) => {
                 email={modal.email}
                 messageCount={modal.messageCount}
             />
-            {/* TODO */}
             <div className="text-center border border-gray-700 shadow-2xl h-screen py-4">
-                {/* <div className="block text-white">navbar</div> */}
                 <div className="flex h-full">
                     {!chatUsersLoading && onlineUsers && onlineUsers.length ? (
                         <ChatUsers

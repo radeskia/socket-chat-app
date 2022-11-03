@@ -1,6 +1,6 @@
 import { format } from "date-fns";
-import { MessageProps } from "../../interfaces/ChatMessageProps";
 import { useAuth } from "../../providers/auth-context";
+import { MessageProps } from "../../interfaces/Messages";
 
 const ChatMessage = ({ message, avatar, setModal }: MessageProps) => {
     const { currentUser } = useAuth();
