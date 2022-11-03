@@ -6,8 +6,8 @@ const App = () => {
     const { currentUser } = useAuth();
 
     return (
-        <div className="bg-gray-900 min-h-screen w-screen">
-            <div className="mx-2 sm:mx-10 xl:mx-96 h-screen">
+        <div className="bg-gray-900 h-full w-screen">
+            <div className="mx-2 sm:mx-10 xl:mx-96 min-h-screen h-full">
                 {currentUser ? <Authenticated /> : <Unauthenticated />}
                 <div className="w-full text-white"></div>
             </div>

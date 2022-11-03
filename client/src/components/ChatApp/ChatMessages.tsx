@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { format } from "date-fns";
 import { useAuth } from "../../providers/auth-context";
 import ChatUsers from "./ChatUsers";
 import ChatMessage from "./ChatMessage";

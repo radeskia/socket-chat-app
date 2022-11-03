@@ -56,7 +56,7 @@ let onlineUsers = [];
 // INITIATE SOCKET.IO CONNECTION
 io.on("connection", (socket) => {
     // On new connection, log connection ID to console
-    console.log(`${socket.id} connected`);
+    // console.log(`${socket.id} connected`);
 
     // Emit online status, join private room
     socket.on("online", async (data) => {
