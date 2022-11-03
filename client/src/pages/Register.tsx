@@ -73,6 +73,22 @@ const Register = () => {
                     {({ isSubmitting }) => (
                         <Form className="flex flex-col text-left">
                             <Field
+                                name="first_name"
+                                type="text"
+                                component={TextField}
+                                label="First Name"
+                                required={true}
+                                placeholder="John"
+                            />
+                            <Field
+                                name="last_name"
+                                type="text"
+                                component={TextField}
+                                label="Last Name"
+                                required={true}
+                                placeholder="Smith"
+                            />
+                            <Field
                                 name="email"
                                 type="text"
                                 component={TextField}

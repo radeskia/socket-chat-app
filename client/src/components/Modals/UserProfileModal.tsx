@@ -2,8 +2,9 @@ const UserProfileModal = ({
     showModal,
     setShowModal: setModal,
     avatar,
+    first_name,
+    last_name,
     email,
-    messageCount,
 }: any) => {
     return (
         <div
@@ -22,8 +23,8 @@ const UserProfileModal = ({
                             "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png";
                     }}
                 />
-                <p className="text-lg">{email}</p>
-                <p className="text-sm text-slate-400">{`Message Count : ${messageCount}`}</p>
+                <p className="text-lg">{`${first_name} ${last_name}`}</p>
+                <p className="text-sm text-gray-500">{`${email}`}</p>
                 <button
                     className="bg-gray-600 hover:bg-gray-500 max-w-xs mx-auto px-5 py-1 my-2 rounded shadow-lg mb-5"
                     onClick={() =>
@@ -31,7 +32,8 @@ const UserProfileModal = ({
                             show: false,
                             email: "User Email",
                             avatar: "User Avatar",
-                            messageCount: "0",
+                            first_name: "First Name",
+                            last_name: "Last Name",
                         })
                     }
                 >

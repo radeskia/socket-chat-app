@@ -1,9 +1,13 @@
 import { format } from "date-fns";
 import { useAuth } from "../../providers/auth-context";
 import { MessageProps } from "../../interfaces/Messages";
+import { QueryCache, useQueryClient } from "react-query";
 
 const ChatMessage = ({ message, avatar, setModal }: MessageProps) => {
     const { currentUser } = useAuth();
+
+    const queryData = useQueryClient();
+    const userData: any = queryData.getQueryData(["chatUsers"]);
 
     return (
         <div className="flex justify-between" key={message._id ?? message.time}>
@@ -43,8 +47,13 @@ const ChatMessage = ({ message, avatar, setModal }: MessageProps) => {
                         setModal({
                             show: true,
                             email: message.sender,
+                            first_name: userData.data.find((user: any) => {
+                                return user.email === message.sender;
+                            }).first_name,
+                            last_name: userData.data.find((user: any) => {
+                                return user.email === message.sender;
+                            }).last_name,
                             avatar: avatar,
-                            messageCount: 0,
                         })
                     }
                 >

@@ -62,8 +62,9 @@ const ChatApp = ({ socket }: any) => {
     const [modal, setModal] = useState<ModalProps>({
         show: false,
         email: "User Email",
+        first_name: "First Name",
+        last_name: "Last Name",
         avatar: "User Avatar",
-        messageCount: "0",
     });
 
     /*
@@ -273,7 +274,8 @@ const ChatApp = ({ socket }: any) => {
                 setShowModal={setModal}
                 avatar={modal.avatar}
                 email={modal.email}
-                messageCount={modal.messageCount}
+                first_name={modal.first_name}
+                last_name={modal.last_name}
             />
             <div className="text-center border border-gray-700 shadow-2xl h-screen py-4">
                 <div className="flex h-full">
@@ -291,13 +293,15 @@ const ChatApp = ({ socket }: any) => {
                     <ChatMessages
                         messages={messages}
                         setModal={setModal}
-                        avatarsData={chatUsersData}
+                        chatsData={chatUsersData}
                         message={message}
                         setMessage={setMessage}
                         handleSendMessage={handleSendMessage}
                         isTyping={isTyping}
                         currentChat={currentChat}
                         handleLogout={handleLogout}
+                        setCurrentChat={setCurrentChat}
+                        onlineUsers={onlineUsers}
                     />
                 </div>
             </div>

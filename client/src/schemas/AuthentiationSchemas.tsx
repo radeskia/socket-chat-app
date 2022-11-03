@@ -2,6 +2,12 @@
 import * as Yup from "yup";
 
 export const AUTHENTICATION_REGISTER_SCHEMA = Yup.object({
+    first_name: Yup.string()
+        .matches(/^[A-Za-z ]*$/, "Please enter a valid first name")
+        .required("First Name is required!"),
+    last_name: Yup.string()
+        .matches(/^[A-Za-z ]*$/, "Please enter a valid last name")
+        .required("Last Name is required!"),
     email: Yup.string()
         .email("Must be a valid email address")
         .required("Email is required!"),

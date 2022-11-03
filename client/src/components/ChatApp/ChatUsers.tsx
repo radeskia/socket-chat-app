@@ -5,11 +5,19 @@ const ChatUsers = ({
     setCurrentChat,
     chatsData,
     onlineUsers,
+    showUsers,
+    setShowUsers,
 }: any) => {
     const { currentUser } = useAuth();
 
     return (
-        <div className="hidden sm:flex flex-col sm:px-2 text-center sm:mx-2 shadow-2xl h-full">
+        <div
+            className={`${
+                showUsers
+                    ? "w-screen h-screen z-50 absolute bg-gray-900 top-0 right-0 left-0 bottom-0"
+                    : "hidden sm:flex flex-col sm:px-2 text-center sm:mx-2 shadow-2xl h-full"
+            } `}
+        >
             {chatsData.data.map((x: any) => {
                 if (currentUser === x.email) {
                     return;

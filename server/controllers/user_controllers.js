@@ -22,6 +22,8 @@ module.exports = {
                 // Create new user Object
                 const newUser = new User({
                     email: req.body.email,
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
                     avatar:
                         req.body.avatar || "https://i.imgur.com/fR03clc.png",
                     password: await bcrypt.hash(req.body.password, 7),
@@ -71,40 +73,6 @@ module.exports = {
 
                 return res.status(200).json(PrettyResponse);
             }
-        } catch (error) {
-            PrettyResponse.error = true;
-            PrettyResponse.message = error.message;
-
-            res.status(400).json(PrettyResponse);
-        }
-    },
-    fetchAvatars: async (req, res) => {
-        try {
-            // Destructure route parameters into array
-            const users = req.params[0].split("/");
-
-            // For each parameter send db query & package the results
-            const loopQueries = async () => {
-                const userAvatarArray = [];
-
-                for (let i = 0; i < users.length; i++) {
-                    const test = await User.find()
-                        .where("email")
-                        .equals(users[i]);
-                    userAvatarArray.push({
-                        email: test[0].email,
-                        avatar: test[0].avatar,
-                    });
-                }
-                return userAvatarArray;
-            };
-            const results = await loopQueries();
-
-            PrettyResponse.error = false;
-            PrettyResponse.message = "Success";
-            PrettyResponse.data = results;
-
-            res.status(200).json(PrettyResponse);
         } catch (error) {
             PrettyResponse.error = true;
             PrettyResponse.message = error.message;
