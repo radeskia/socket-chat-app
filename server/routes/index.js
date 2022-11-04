@@ -6,7 +6,7 @@ const {
     REGISTER_SCHEMA,
     LOGIN_SCHEMA,
 } = require("../schemas/AuthenticationSchemas");
-const { validate } = require("../validations/validate");
+const { validate } = require("../middleware/validate");
 
 router
     //Test routes
