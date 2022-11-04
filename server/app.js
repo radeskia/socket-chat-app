@@ -23,6 +23,12 @@ const app = express();
 // Morgan Logger
 const morgan = require("morgan");
 
+// Redis
+const redis = require("redis");
+const { db } = require("./models/message");
+
+const redisClient = redis.createClient(6379);
+
 // Initialize logger
 // app.use(morgan("dev"));
 
@@ -51,8 +57,6 @@ mongoose.connect(
     }
 );
 
-let onlineUsers = [];
-
 // INITIATE SOCKET.IO CONNECTION
 io.on("connection", (socket) => {
     // On new connection, log connection ID to console
@@ -63,23 +67,40 @@ io.on("connection", (socket) => {
         // console.log(`User online: ${data.email}`);
         await socket.join(data.email);
 
-        if (onlineUsers.some((entity) => entity.email === data.email)) {
-            const index = onlineUsers.findIndex(
-                (entity) => entity.email === data.email
+        await redisClient.connect();
+
+        const dbArray = await redisClient.get("online_users");
+
+        if (!dbArray) {
+            await redisClient.set(
+                "online_users",
+                JSON.stringify([{ email: data.email, id: socket.id }])
             );
-            onlineUsers.splice(index, 1, { email: data.email, id: socket.id });
+            const test33 = await JSON.parse(redisClient.get("online_users"));
+            console.log(test33[0]);
         } else {
-            onlineUsers.push({
-                email: data.email,
-                id: socket.id,
-            });
+            const onlineUsers = JSON.parse(dbArray);
+            if (onlineUsers.some((entity) => entity.email === data.email)) {
+                const index = onlineUsers.findIndex(
+                    (entity) => entity.email === data.email
+                );
+                onlineUsers.splice(index, 1, {
+                    email: data.email,
+                    id: socket.id,
+                });
+            } else {
+                onlineUsers.push({ email: data.email, id: socket.id });
+            }
+            await redisClient.set("online_users", JSON.stringify(onlineUsers));
+            console.log(onlineUsers);
+            io.emit("online_users", onlineUsers);
         }
-        console.log(`Users online: `, onlineUsers);
-        io.emit("online_users", onlineUsers);
+
+        await redisClient.quit();
     });
 
     // // Emit offline status, disconnect & remove user from onlineUsers
-    socket.on("logout", (data) => {
+    socket.on("logout", async (data) => {
         //Dev console
         console.log(`Disconnected: ${data.email}`);
         //Emit confirmation
@@ -88,9 +109,17 @@ io.on("connection", (socket) => {
         });
 
         // Remove user from onlineUsers
+        await redisClient.connect();
+        const dbArray = await redisClient.get("online_users");
+
+        let onlineUsers = JSON.parse(dbArray);
         onlineUsers = onlineUsers.filter(
             (entity) => entity.email !== data.email
         );
+
+        await redisClient.set("online_users", JSON.stringify(onlineUsers));
+        console.log(onlineUsers);
+        await redisClient.quit();
 
         io.emit("online_users", onlineUsers);
         console.log(onlineUsers);
