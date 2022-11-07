@@ -146,6 +146,7 @@ const ChatApp = ({ socket }: any) => {
             sender: currentUser,
             receiver: currentChat,
             message: `${messageContent}`,
+            seen: false,
             time: Date.now(),
         });
 
@@ -245,22 +246,14 @@ const ChatApp = ({ socket }: any) => {
             from: currentChatRef.current,
             to: currentUser,
         });
-        const updatedMessages = messages.map((entity) => {
-            return {
-                message: entity.message,
-                _id: entity._id,
-                receiver: entity.receiver,
-                sender: entity.sender,
-                time: entity.time,
-                __v: entity.__v,
-                seen: true,
-            };
-        });
-        setMessages(updatedMessages);
-    }, [currentChat, messages, message]);
+    }, [currentChat, messages]);
 
-    socket.on("marked_seen", () => {
-        if (messages.length) {
+    socket.on("marked_seen", (data: any) => {
+        if (
+            messages.length &&
+            data.from === currentUser &&
+            data.to === currentChat
+        ) {
             const updatedMessages = messages.map((entity) => {
                 return {
                     message: entity.message,
