@@ -24,19 +24,19 @@ const ChatMessage = ({ message, avatar, setModal }: MessageProps) => {
                 }`}
             >
                 <div
-                    className={`relative text-blue-500 p-1 bg-gray-800 my-1 rounded-md px-2 break-all text-justify flex items-center ${
+                    className={`relative text-white bg-gray-800 my-1 rounded-xl px-3 py-3 break-all text-justify flex items-center ${
                         currentUser === message.sender
-                            ? "order-1 pl-5"
-                            : "order-2 pr-5"
+                            ? "order-1 pl-5 rounded-br-none"
+                            : "order-2 pr-5 rounded-bl-none bg-gray-700"
                     }`}
                 >
                     <p>{message.message}</p>
                     <div
-                        className={`absolute h-2 w-2 border-2 border-gray-600 rounded-full bottom-2 ${
+                        className={`absolute h-2 w-2 border-2 border-gray-500 rounded-full bottom-2 ${
                             currentUser === message.sender
                                 ? "left-2"
                                 : "right-2"
-                        } ${message.seen ? "bg-gray-600" : ""}`}
+                        } ${message.seen ? "bg-gray-500" : ""}`}
                     ></div>
                 </div>
                 <div
