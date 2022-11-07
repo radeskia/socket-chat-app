@@ -9,7 +9,7 @@ const validate = (schema) => async (req, res, next) => {
         return next();
     } catch (error) {
         PrettyResponse.error = true;
-        PrettyResponse.message = error.message + `asddd`;
+        PrettyResponse.message = error.message;
         return res.status(500).json(PrettyResponse);
     }
 };

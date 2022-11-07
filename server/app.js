@@ -25,7 +25,11 @@ const morgan = require("morgan");
 
 // Redis
 const redis = require("redis");
-const { db } = require("./models/message");
+
+// Cookie parser
+const cookieParser = require("cookie-parser");
+
+app.use(cookieParser());
 
 const redisClient = redis.createClient(6379);
 

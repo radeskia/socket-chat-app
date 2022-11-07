@@ -1,9 +1,14 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const PrettyResponse = {
     error: false,
     message: "",
+    data: {
+        access_token: null,
+        refresh_token: null,
+    },
 };
 
 module.exports = {
@@ -68,10 +73,41 @@ module.exports = {
 
                 return res.status(403).json(PrettyResponse);
             } else {
-                PrettyResponse.error = false;
-                PrettyResponse.message = "Logged in!";
+                // MAIN ACCESS TOKEN
+                const access_token = jwt.sign(
+                    {
+                        email: req.body.email,
+                        password: req.body.password,
+                    },
+                    process.env.ACCESS_TOKEN_SECRET,
+                    {
+                        expiresIn: "5m",
+                    }
+                );
+                // REFRESH TOKEN
+                const refresh_token = jwt.sign(
+                    {
+                        email: req.body.email,
+                        password: req.body.password,
+                    },
+                    process.env.REFRESH_TOKEN_SECRET,
+                    {
+                        expiresIn: "15m",
+                    }
+                );
 
-                return res.status(200).json(PrettyResponse);
+                PrettyResponse.error = false;
+                PrettyResponse.message = "Success";
+                PrettyResponse.data.access_token = access_token;
+                PrettyResponse.data.refresh_token = refresh_token;
+
+                res.cookie("refresh_token", refresh_token, {
+                    maxAge: 24 * 60 * 60 * 1000,
+                })
+                    .status(200)
+                    .json(PrettyResponse);
+
+                // return res.status(200).json(PrettyResponse);
             }
         } catch (error) {
             PrettyResponse.error = true;
