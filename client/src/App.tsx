@@ -1,9 +1,23 @@
+import { useQuery } from "react-query";
 import Authenticated from "./layout/Authenticated";
 import Unauthenticated from "./layout/Unauthenticated";
 import { useAuth } from "./providers/auth-context";
+import { handleTokenRefresh } from "./utils/handleTokenRefresh";
 
 const App = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, updateUser } = useAuth();
+
+    useQuery(
+        ["tokenStatus"],
+        () => {
+            // Skip refresh token handling on login
+            if (!currentUser) return;
+            handleTokenRefresh(updateUser);
+        },
+        {
+            refetchInterval: 240000,
+        }
+    );
 
     return (
         <div className="bg-gray-900 h-full w-screen">

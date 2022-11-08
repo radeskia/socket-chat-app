@@ -1,44 +1,52 @@
 export const handleTokenRefresh = async (
     updateUser: (token?: string) => void
 ) => {
-    const refreshToken = localStorage.getItem("refresh_token") ?? "";
-
-    if (!refreshToken)
-        throw new Error("Can't refresh access token. No refresh token found.");
-
     try {
-        const response = await fetch(
-            "https://movies.codeart.mk/api/auth/refresh-token",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                body: JSON.stringify({ refresh_token: refreshToken }),
-            }
-        );
+        const response = await fetch("http://192.168.100.181:3001/refresh", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                // Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+            body: JSON.stringify({
+                email: localStorage.getItem("email"),
+                refresh_token: localStorage.getItem("refresh_token"),
+            }),
+        });
 
-        const data = await response.json();
+        const json = await response.json();
 
         // Check if response is okay && refresh_token is present in response
-        if (!response.ok || !data.refresh_token) {
+        if (
+            !response.ok ||
+            !json.data.access_token ||
+            !json.data.refresh_token
+        ) {
             throw new Error(
-                `Couldn't refresh access token. Reason: ${data.message}`
+                `Couldn't refresh access token. Reason: ${json.message}`
             );
         }
 
         // Update localStorage with new tokens
-        // handleUserLocalStorage(data);
+        localStorage.setItem("access_token", json.data.access_token);
+        localStorage.setItem("refresh_token", json.data.refresh_token);
 
-        // return the data to the place where the useQuery hook will be called
+        console.log({
+            message: `Refreshed!`,
+            newToken: json.data.access_token,
+            newRefresh: json.data.refresh_token,
+        });
+
+        // return the data to the place where the useQuery hook will be called - OPTIONAL
         return {
-            access_token: data.access_token,
-            refresh_token: data.refresh_token,
+            access_token: json.data.access_token,
+            refresh_token: json.data.refresh_token,
         };
     } catch (err: any) {
         // Logout user in case fetching new refresh-token fails
-        // handleLogout(`${err.message}`, updateUser);
+        updateUser("");
+        localStorage.removeItem("email");
         throw new Error(err.message);
     }
 };

@@ -37,6 +37,7 @@ export const handleFetch = async (
 
         return json;
     } catch (error: any) {
-        throw Error(error);
+        // throw Error(error);
+        console.log(error.message);
     }
 };

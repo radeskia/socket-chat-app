@@ -3,19 +3,17 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const PrettyResponse = {
-    error: false,
-    message: "",
-    data: null,
-};
-
-const validate_access_token = (req, res, next) => {
+const auth = (req, res, next) => {
+    const PrettyResponse = {
+        error: false,
+        message: "",
+        data: null,
+    };
     try {
-        const token = req.body.data.access_token;
+        const token = req.header("authorization").split(" ")[1];
         if (token) {
-            const access_token = req.cookies.access_token;
             jwt.verify(
-                access_token,
+                token,
                 process.env.ACCESS_TOKEN_SECRET,
                 (error, decoded) => {
                     if (error) {
@@ -28,7 +26,7 @@ const validate_access_token = (req, res, next) => {
                 }
             );
         } else {
-            throw new Error("No cookies lol");
+            throw new Error("No token lol");
         }
     } catch (error) {
         PrettyResponse.error = true;
@@ -37,4 +35,4 @@ const validate_access_token = (req, res, next) => {
         return res.status(406).json(PrettyResponse);
     }
 };
-module.exports = { validate_access_token };
+module.exports = { auth };

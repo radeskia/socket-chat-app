@@ -168,6 +168,9 @@ const ChatApp = ({ socket }: any) => {
             email: currentUser,
         });
         localStorage.removeItem("email");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("access_token");
+
         updateUser("");
     };
 

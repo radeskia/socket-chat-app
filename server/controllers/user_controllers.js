@@ -106,12 +106,7 @@ module.exports = {
                 ResponseData.data.access_token = access_token;
                 ResponseData.data.refresh_token = refresh_token;
 
-                return res
-                    .cookie("refresh_token", refresh_token, {
-                        maxAge: 24 * 60 * 60 * 1000,
-                    })
-                    .status(200)
-                    .json(ResponseData);
+                return res.status(200).json(ResponseData);
             }
         } catch (error) {
             ResponseData.error = true;
@@ -155,12 +150,7 @@ module.exports = {
             ResponseData.data.access_token = access_token;
             ResponseData.data.refresh_token = refresh_token;
 
-            return res
-                .cookie("refresh_token", refresh_token, {
-                    maxAge: 24 * 60 * 60 * 1000,
-                })
-                .status(200)
-                .json(ResponseData);
+            return res.status(200).json(ResponseData);
         } catch (error) {
             ResponseData.error = true;
             ResponseData.message = error.message;

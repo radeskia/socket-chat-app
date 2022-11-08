@@ -11,11 +11,10 @@ const PrettyResponse = {
 
 const validate_refresh_token = (req, res, next) => {
     try {
-        const token = req.cookies.refresh_token;
+        const token = req.body.refresh_token;
         if (token) {
-            const refresh_token = req.cookies.refresh_token;
             jwt.verify(
-                refresh_token,
+                token,
                 process.env.REFRESH_TOKEN_SECRET,
                 (error, decoded) => {
                     if (error) {
@@ -28,7 +27,7 @@ const validate_refresh_token = (req, res, next) => {
                 }
             );
         } else {
-            throw new Error("No cookies lol");
+            throw new Error("No token lol");
         }
     } catch (error) {
         PrettyResponse.error = true;
