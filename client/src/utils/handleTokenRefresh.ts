@@ -32,12 +32,6 @@ export const handleTokenRefresh = async (
         localStorage.setItem("access_token", json.data.access_token);
         localStorage.setItem("refresh_token", json.data.refresh_token);
 
-        console.log({
-            message: `Refreshed!`,
-            newToken: json.data.access_token,
-            newRefresh: json.data.refresh_token,
-        });
-
         // return the data to the place where the useQuery hook will be called - OPTIONAL
         return {
             access_token: json.data.access_token,
