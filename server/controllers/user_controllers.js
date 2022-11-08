@@ -99,19 +99,19 @@ module.exports = {
                 PrettyResponse.data.access_token = access_token;
                 PrettyResponse.data.refresh_token = refresh_token;
 
-                res.cookie("refresh_token", refresh_token, {
-                    maxAge: 24 * 60 * 60 * 1000,
-                })
+                return res
+                    .cookie("refresh_token", refresh_token, {
+                        maxAge: 24 * 60 * 60 * 1000,
+                    })
                     .status(200)
                     .json(PrettyResponse);
-
-                // return res.status(200).json(PrettyResponse);
             }
         } catch (error) {
             PrettyResponse.error = true;
             PrettyResponse.message = error.message;
             PrettyResponse.data.access_token = null;
             PrettyResponse.data.refresh_token = null;
+
             res.status(400).json(PrettyResponse);
         }
     },
