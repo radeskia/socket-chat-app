@@ -26,6 +26,7 @@ const Login = () => {
                 "POST",
                 formData
             );
+            console.log(res);
             if (res.error) {
                 setModal({
                     show: true,
@@ -35,6 +36,7 @@ const Login = () => {
             } else {
                 updateUser(formData.email);
                 localStorage.setItem("email", formData.email);
+                localStorage.setItem("access_token", res.data.access_token);
             }
         } catch (error) {
             console.log(error);
