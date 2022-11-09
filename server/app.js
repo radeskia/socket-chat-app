@@ -107,10 +107,6 @@ io.on("connection", (socket) => {
     socket.on("logout", async (data) => {
         //Dev console
         console.log(`Disconnected: ${data.email}`);
-        //Emit confirmation
-        io.to(socket.id).emit("disconnection", {
-            message: "bye bye connection",
-        });
 
         // Remove user from onlineUsers
         await redisClient.connect();
