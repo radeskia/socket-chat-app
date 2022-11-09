@@ -41,6 +41,9 @@ export const handleTokenRefresh = async (
         // Logout user in case fetching new refresh-token fails
         updateUser("");
         localStorage.removeItem("email");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+
         throw new Error(err.message);
     }
 };
