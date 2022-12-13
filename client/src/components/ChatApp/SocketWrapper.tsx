@@ -1,8 +1,9 @@
 import * as io from "socket.io-client";
 import ChatApp from "./ChatApp";
+import { URL } from "../../../../env";
 
 const SocketWrapper = () => {
-    const socket = io.connect("http://192.168.100.181:3001", {
+    const socket = io.connect(`${URL}:3001/`, {
         // autoConnect: false,
         reconnection: false,
     });

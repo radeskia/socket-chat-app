@@ -6,6 +6,7 @@ import NotificationModal from "../components/Modals/NotificationModal";
 import { useAuth } from "../providers/auth-context";
 import { AUTHENTICATION_LOGIN_SCHEMA } from "../schemas/AuthentiationSchemas";
 import { handleFetch } from "../utils/handleFetch";
+import { URL } from "../../../env";
 
 const Login = () => {
     // Update user context on successful login
@@ -22,7 +23,7 @@ const Login = () => {
     const handleLogin = async (formData: any) => {
         try {
             const res = await handleFetch(
-                "http://192.168.100.181:3001/login",
+                `${URL}:3001/login`,
                 "POST",
                 formData
             );

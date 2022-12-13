@@ -5,6 +5,7 @@ import TextField from "../components/Inputs/TextField";
 import NotificationModal from "../components/Modals/NotificationModal";
 import { AUTHENTICATION_REGISTER_SCHEMA } from "../schemas/AuthentiationSchemas";
 import { handleFetch } from "../utils/handleFetch";
+import { URL } from "../../../env";
 
 const Register = () => {
     /*
@@ -24,7 +25,7 @@ const Register = () => {
     const handleRegister = async (formData: any) => {
         try {
             const res = await handleFetch(
-                "http://192.168.100.181:3001/register",
+                `${URL}:3001/register`,
                 "POST",
                 formData
             );

@@ -16,6 +16,9 @@ import ChatMessages from "./ChatMessages";
 import { ModalProps } from "../../interfaces/ModalProps";
 import { UserObject } from "../../interfaces/UserObject";
 
+// Constants
+import { URL } from "../../../../env";
+
 const ChatApp = ({ socket }: any) => {
     const { currentUser, updateUser } = useAuth();
 
@@ -95,7 +98,7 @@ const ChatApp = ({ socket }: any) => {
         [`messages`, currentChat, messages],
         () =>
             handleFetch(
-                `http://192.168.100.181:3001/chats/${currentUser}/${currentChat}`,
+                `${URL}:3001/chats/${currentUser}/${currentChat}`,
                 "GET"
             ),
         {
@@ -177,7 +180,7 @@ const ChatApp = ({ socket }: any) => {
     // Get all users, used to make a chat icon for each
     const { isLoading: chatUsersLoading, data: chatUsersData } = useQuery(
         [`chatUsers`],
-        () => handleFetch(`http://192.168.100.181:3001/users`, "GET")
+        () => handleFetch(`${URL}:3001/users`, "GET")
     );
 
     /*

@@ -1,8 +1,10 @@
+import { URL } from "../../../env";
+
 export const handleTokenRefresh = async (
     updateUser: (token?: string) => void
 ) => {
     try {
-        const response = await fetch("http://192.168.100.181:3001/refresh", {
+        const response = await fetch(`${URL}:3001/refresh`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
