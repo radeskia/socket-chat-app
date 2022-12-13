@@ -18,6 +18,7 @@
 #### ->`MongoDB`  
 #### ->`Mongoose`  
 #### ->`bcrypt`  
+#### ->`redis`
   
   
   
